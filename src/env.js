@@ -8,6 +8,15 @@ export const env = createEnv({
    */
   server: {
     DATABASE_URL: z.string().url(),
+    NEXTAUTH_URL: z.string().url(),
+    NEXTAUTH_SECRET: z.string(),
+    GITHUB_ID: z.string(),
+    GITHUB_SECRET: z.string(),
+    DISCORD_ID: z.string(),
+    DISCORD_SECRET: z.string(),
+    GOOGLE_ID: z.string(),
+    GOOGLE_SECRET: z.string(),
+    // DISCORD_REDIRECT_URL: z.string(),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
@@ -29,6 +38,16 @@ export const env = createEnv({
   runtimeEnv: {
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
+    GITHUB_ID: process.env.GITHUB_ID,
+    GITHUB_SECRET: process.env.GITHUB_SECRET,
+    NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
+    DISCORD_ID: process.env.DISCORD_ID,
+    DISCORD_SECRET: process.env.DISCORD_SECRET,
+    GOOGLE_ID: process.env.GOOGLE_ID,
+    GOOGLE_SECRET: process.env.GOOGLE_SECRET,
+    // DISCORD_REDIRECT_URL: process.env.DISCORD_REDIRECT_URL,
+ 
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**
