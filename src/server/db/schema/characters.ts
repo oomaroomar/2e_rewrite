@@ -34,7 +34,7 @@ export const learnedSpells = createTable(
   "learned_spell",
   {
     spellId: integer("spellId")
-      .references(() => spells.id, { onDelete: "cascade" })
+      .references(() => spells.id, { onDelete: "cascade" }) // Deleting spells will probably be made impossible or admin only
       .notNull(),
     charId: integer("charId")
       .references(() => characters.id, { onDelete: "cascade" })

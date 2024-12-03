@@ -10,6 +10,7 @@ import {
 
 import { createTable } from "~/utils/createTable";
 import { spells } from "./spells";
+import { books, characters } from "./characters";
 
 export const users = createTable("user", {
   id: varchar("id", { length: 255 })
@@ -23,8 +24,57 @@ export const users = createTable("user", {
   image: varchar("image", { length: 255 }),
 });
 
+export const favCharacters = createTable(
+  "favCharacters",
+  {
+    userId: varchar("userId", { length: 255 })
+      .notNull()
+      .references(() => users.id),
+    charId: integer("charId")
+      .notNull()
+      .references(() => characters.id),
+  },
+  (t) => ({ pk: primaryKey({ columns: [t.charId, t.userId] }) }),
+);
+
+export const favCharactersRelations = relations(favCharacters, ({ one }) => ({
+  user: one(users, {
+    fields: [favCharacters.charId],
+    references: [users.id],
+  }),
+  character: one(characters, {
+    fields: [favCharacters.charId],
+    references: [characters.id],
+  }),
+}));
+
+export const favBooks = createTable(
+  "favBooks",
+  {
+    userId: varchar("userId", { length: 255 })
+      .notNull()
+      .references(() => users.id),
+    bookId: integer("bookId")
+      .notNull()
+      .references(() => books.id),
+  },
+  (t) => ({ pk: primaryKey({ columns: [t.bookId, t.userId] }) }),
+);
+
+export const favBooksRelations = relations(favBooks, ({ one }) => ({
+  user: one(users, {
+    fields: [favBooks.userId],
+    references: [users.id],
+  }),
+  book: one(books, {
+    fields: [favBooks.bookId],
+    references: [books.id],
+  }),
+}));
+
 export const userRelations = relations(users, ({ many }) => ({
   createdSpells: many(spells),
+  favCharacters: many(characters),
 }));
 
 export const accounts = createTable(
