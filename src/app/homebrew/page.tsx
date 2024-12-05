@@ -12,6 +12,7 @@ export default function App() {
   const onSubmit = (data: unknown) => console.log(data);
 
   console.log(watch("example")); // watch input value by passing the name of it
+  console.log("rerender");
 
   return (
     /* "handleSubmit" will validate your inputs before invoking "onSubmit" */

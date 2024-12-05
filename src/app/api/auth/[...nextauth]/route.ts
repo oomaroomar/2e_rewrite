@@ -4,7 +4,7 @@ import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { db } from "~/server/db";
-import * as schema from "~/server/db/schema";
+import { schema } from "~/server/db";
 import { env } from "~/env.js";
 
 export const authOptions = {
