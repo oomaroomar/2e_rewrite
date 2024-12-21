@@ -4,7 +4,6 @@ import Link from "next/link";
 
 export function TopNav() {
   const { data: session } = useSession();
-  console.log(session);
   return (
     <nav className="flex w-full items-center justify-between border-b border-black p-4 text-xl font-semibold">
       <div>Gallery</div>

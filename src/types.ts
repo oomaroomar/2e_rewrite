@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import NextAuth, { DefaultSession } from "next-auth";
+import { DefaultSession } from "next-auth";
 
 declare module "next-auth" {
   interface Session {
@@ -53,8 +53,30 @@ export const schools = [
   "illusion",
   "necromancy",
 ] as const;
+export const schoolLabels = [
+  "Abjuration",
+  "Alteration",
+  "Conjuration",
+  "Divination",
+  "Enchantment",
+  "Invocation",
+  "Illusion",
+  "Necromancy",
+] as const;
 
 export const castingClasses = ["wizard", "cleric"] as const;
+export const castingTimes = [
+  "special",
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9",
+] as const;
 export const spellLevels = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
 export const savingThrows = ["negate", "none", "1/2", "special"] as const;
 export const sources = ["PHB", "ToM", "S&M", "CWH", "user", "Koibu"] as const;

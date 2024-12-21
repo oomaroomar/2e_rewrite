@@ -477,6 +477,8 @@ const MultipleSelector = React.forwardRef<
                   className={cn(
                     "data-[disabled]:bg-muted-foreground data-[disabled]:text-muted data-[disabled]:hover:bg-muted-foreground",
                     "data-[fixed]:bg-muted-foreground data-[fixed]:text-muted data-[fixed]:hover:bg-muted-foreground",
+                    // Sloppy hardcode below for my usecase
+                    `bg-${option.value} hover:bg-${option.value}`,
                     badgeClassName,
                   )}
                   data-fixed={option.fixed}
@@ -537,14 +539,17 @@ const MultipleSelector = React.forwardRef<
                   "w-full": hidePlaceholderWhenSelected,
                   "ml-1": selected.length !== 0,
                 },
+                `${disabled ? "cursor-not-allowed" : ""}`,
                 inputProps?.className,
               )}
             />
             <button
               type="button"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 setSelected(selected.filter((s) => s.fixed));
                 onChange?.(selected.filter((s) => s.fixed));
+                setOpen(false);
               }}
               className={cn(
                 "my-auto h-6 w-6 p-0",
@@ -555,7 +560,7 @@ const MultipleSelector = React.forwardRef<
                   "hidden",
               )}
             >
-              <X />
+              <X className="h-5 w-5" />
             </button>
           </div>
         </div>
