@@ -44,7 +44,8 @@ export const formSchema = z.object({
       value: z.enum(spheres),
       label: z.enum(spheres),
     })
-    .array(),
+    .array()
+    .optional(),
   somatic: z.boolean().default(true),
   verbal: z.boolean().default(true),
   material: z.boolean().default(true),
