@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 import { useForm } from "react-hook-form";
 import { formSchema } from "../_components/consts";
 import { z } from "zod";
@@ -6,6 +6,7 @@ import { Form } from "~/components/ui/form";
 import { FormField } from "../_components/FormField";
 import { Button } from "~/components/ui/button";
 import { schools, spheres } from "~/types";
+// import { InsertSpell } from "~/server/mutations/spell";
 
 const batchSpellsSchema = formSchema
   .omit({
@@ -27,7 +28,8 @@ const batchSpellsSchema = formSchema
 
 export default function BatchHomebrew() {
   const form = useForm({ defaultValues: { spellJson: "" } });
-  function onSubmit(values: { spellJson: string }) {
+  async function onSubmit(values: { spellJson: string }) {
+    "use server";
     const parsed = batchSpellsSchema.safeParse(JSON.parse(values.spellJson));
     if (!parsed.success) {
       console.error(parsed.error.errors);
@@ -37,6 +39,7 @@ export default function BatchHomebrew() {
       });
       return;
     }
+    // await InsertSpell();
     console.log(parsed);
   }
   return (
