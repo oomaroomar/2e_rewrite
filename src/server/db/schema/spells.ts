@@ -43,10 +43,10 @@ export const spells = createTable(
     range: text("range"),
     aoe: text("aoe"),
     castingTime: text("castingTime").notNull(),
-    duration: text("castingTime"),
-    savingThrow: text("castingTime"),
-    damage: text("castingTime"),
-    description: text("castingTime").notNull(),
+    duration: text("duration"),
+    savingThrow: text("savingThrow"),
+    damage: text("damage"),
+    description: text("description").notNull(),
     source: sourceEnum("source"),
     spheres: sphereEnum("spheres")
       .array()

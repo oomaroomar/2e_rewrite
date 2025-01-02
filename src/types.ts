@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { DefaultSession } from "next-auth";
+import { z } from "zod";
 
-declare module "next-auth" {
-  interface Session {
-    user: {
-      id?: string;
-    } & DefaultSession["user"];
-  }
-}
+// declare module "next-auth" {
+//   interface Session {
+//     user: {
+//       id?: string;
+//     } & DefaultSession["user"];
+//   }
+// }
 
 // Spell stuff below
 
@@ -87,3 +88,34 @@ export type CastingClass = (typeof castingClasses)[number];
 export type SpellLevel = (typeof spellLevels)[number];
 export type SavingThrow = (typeof savingThrows)[number];
 export type Source = (typeof sources)[number];
+
+export const spellSchema = z.object({
+  name: z
+    .string()
+    .min(2, "Name must be at least two characters long.")
+    .max(255, "Name cannot exceed 255 characters"),
+  level: z
+    .number()
+    .min(1, "Please select a level")
+    .max(9, "Spell must be at most level 9"),
+  castingClass: z.enum(castingClasses),
+  schools: z.enum(schools).array(),
+  spheres: z.enum(spheres).array().optional(),
+  somatic: z.boolean().default(true),
+  verbal: z.boolean().default(true),
+  material: z.boolean().default(true),
+  materials: z.string().optional(),
+  aoe: z.string(),
+  castingTime: z.string(),
+  damage: z.string(),
+  duration: z.string().min(1, "Please provide a duration"),
+  range: z.string().min(1, "Please provide a range"),
+  savingThrow: z.string(),
+  description: z.string().min(5, "Please provide a description"),
+  source: z.string(),
+});
+
+export const batchSpellsSchema = spellSchema
+  .omit({ source: true })
+  .extend({ source: z.enum(sources) })
+  .array();

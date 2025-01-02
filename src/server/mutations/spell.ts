@@ -7,9 +7,9 @@ import { authOptions } from "~/app/api/auth/[...nextauth]/route";
 
 export const InsertSpell = async () => {
   const session = await getServerSession(authOptions);
-  if (!session) {
-    throw new Error("Not authenticated");
-  }
+  // if (!session) {
+  //   throw new Error("Not authenticated");
+  // }
   console.log(session);
   const spell = db.insert(spells).values({
     level: 1,

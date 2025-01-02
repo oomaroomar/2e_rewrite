@@ -1,35 +1,29 @@
-// "use client";
+"use client";
 import { useForm } from "react-hook-form";
-import { formSchema } from "../_components/consts";
 import { z } from "zod";
 import { Form } from "~/components/ui/form";
 import { FormField } from "../_components/FormField";
 import { Button } from "~/components/ui/button";
-import { schools, spheres } from "~/types";
-// import { InsertSpell } from "~/server/mutations/spell";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { api } from "~/trpc/react";
 
-const batchSpellsSchema = formSchema
-  .omit({
-    castingTime: true,
-    specialCastingTime: true,
-    savingThrow: true,
-    specialSavingThrow: true,
-    schools: true,
-    spheres: true,
-  })
-  .extend({
-    source: z.string(),
-    castingTime: z.string(),
-    savingThrow: z.string(),
-    schools: z.enum(schools).array(),
-    spheres: z.enum(spheres).array().optional(),
-  })
-  .array();
+import { batchSpellsSchema } from "~/types";
+
+const batchFormSchema = z.object({
+  spellJson: z.string().min(5, { message: "Input empty" }),
+});
 
 export default function BatchHomebrew() {
-  const form = useForm({ defaultValues: { spellJson: "" } });
-  async function onSubmit(values: { spellJson: string }) {
-    "use server";
+  const form = useForm<z.infer<typeof batchFormSchema>>({
+    resolver: zodResolver(batchFormSchema),
+    defaultValues: { spellJson: "" },
+  });
+  const createSpells = api.spell.batchCreateSpells.useMutation({
+    onSuccess: () => window.alert("Spells created!"),
+  });
+
+  async function onSubmit(values: z.infer<typeof batchFormSchema>) {
+    console.log(values);
     const parsed = batchSpellsSchema.safeParse(JSON.parse(values.spellJson));
     if (!parsed.success) {
       console.error(parsed.error.errors);
@@ -39,7 +33,7 @@ export default function BatchHomebrew() {
       });
       return;
     }
-    // await InsertSpell();
+    createSpells.mutate(parsed.data);
     console.log(parsed);
   }
   return (
@@ -52,7 +46,7 @@ export default function BatchHomebrew() {
           <FormField
             control={form.control}
             name="spellJson"
-            labelName="Description"
+            labelName="Spell list JSON"
             textarea
           />
           <Button type="submit">Submit</Button>

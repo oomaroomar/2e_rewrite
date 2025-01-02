@@ -2,8 +2,9 @@
 import "~/styles/globals.css";
 
 import { GeistSans } from "geist/font/sans";
-import SessionProvider from "./components/SessionProvider";
-import { TopNav } from "./components/NavBar";
+import SessionProvider from "./_components/SessionProvider";
+import { TopNav } from "./_components/NavBar";
+import { TRPCReactProvider } from "~/trpc/react";
 
 export default function RootLayout({
   children,
@@ -11,10 +12,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body className="flex flex-col gap-4">
-        <SessionProvider>
-          <TopNav />
-          {children}
-        </SessionProvider>
+        <TRPCReactProvider>
+          <SessionProvider>
+            <TopNav />
+            {children}
+          </SessionProvider>
+        </TRPCReactProvider>
       </body>
     </html>
   );

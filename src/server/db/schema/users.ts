@@ -10,7 +10,7 @@ import {
 
 import { createTable } from "~/utils/createTable";
 import { spells } from "./spells";
-import { books, characters } from "./characters";
+import { books } from "./characters";
 
 export const users = createTable("user", {
   id: varchar("id", { length: 255 })
@@ -23,30 +23,6 @@ export const users = createTable("user", {
   }),
   image: varchar("image", { length: 255 }),
 });
-
-export const favCharacters = createTable(
-  "favCharacters",
-  {
-    userId: varchar("userId", { length: 255 })
-      .notNull()
-      .references(() => users.id),
-    charId: integer("charId")
-      .notNull()
-      .references(() => characters.id),
-  },
-  (t) => ({ pk: primaryKey({ columns: [t.charId, t.userId] }) }),
-);
-
-export const favCharactersRelations = relations(favCharacters, ({ one }) => ({
-  user: one(users, {
-    fields: [favCharacters.charId],
-    references: [users.id],
-  }),
-  character: one(characters, {
-    fields: [favCharacters.charId],
-    references: [characters.id],
-  }),
-}));
 
 export const favBooks = createTable(
   "favBooks",
@@ -74,7 +50,7 @@ export const favBooksRelations = relations(favBooks, ({ one }) => ({
 
 export const userRelations = relations(users, ({ many }) => ({
   createdSpells: many(spells),
-  favCharacters: many(characters),
+  accounts: many(accounts),
 }));
 
 export const accounts = createTable(
@@ -82,7 +58,7 @@ export const accounts = createTable(
   {
     userId: varchar("userId", { length: 255 })
       .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
+      .references(() => users.id),
     type: varchar("type", { length: 255 }).notNull(),
     provider: varchar("provider", { length: 255 }).notNull(),
     providerAccountId: varchar("providerAccountId", { length: 255 }).notNull(),
@@ -101,6 +77,10 @@ export const accounts = createTable(
   }),
 );
 
+export const accountsRelations = relations(accounts, ({ one }) => ({
+  user: one(users, { fields: [accounts.userId], references: [users.id] }),
+}));
+
 export const images = createTable(
   "image",
   {
@@ -116,5 +96,42 @@ export const images = createTable(
   },
   (example) => ({
     imageNameIndex: index("image_name_idx").on(example.name),
+  }),
+);
+export const sessions = createTable(
+  "session",
+  {
+    sessionToken: varchar("session_token", { length: 255 })
+      .notNull()
+      .primaryKey(),
+    userId: varchar("user_id", { length: 255 })
+      .notNull()
+      .references(() => users.id),
+    expires: timestamp("expires", {
+      mode: "date",
+      withTimezone: true,
+    }).notNull(),
+  },
+  (session) => ({
+    userIdIdx: index("session_user_id_idx").on(session.userId),
+  }),
+);
+
+export const sessionsRelations = relations(sessions, ({ one }) => ({
+  user: one(users, { fields: [sessions.userId], references: [users.id] }),
+}));
+
+export const verificationTokens = createTable(
+  "verification_token",
+  {
+    identifier: varchar("identifier", { length: 255 }).notNull(),
+    token: varchar("token", { length: 255 }).notNull(),
+    expires: timestamp("expires", {
+      mode: "date",
+      withTimezone: true,
+    }).notNull(),
+  },
+  (vt) => ({
+    compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
   }),
 );

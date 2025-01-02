@@ -1,5 +1,4 @@
 "use client";
-
 import { useForm } from "react-hook-form";
 import MultiSelector from "~/components/ui/multipeSelector";
 import {
@@ -34,6 +33,7 @@ import {
   schoolOptions,
   sphereOptions,
 } from "./_components/consts";
+import { api } from "~/trpc/react";
 
 export default function Homebrew() {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -59,10 +59,33 @@ export default function Homebrew() {
     },
   });
 
+  const createSpell = api.spell.createSpell.useMutation({
+    onSuccess: () => window.alert("Spell created!"),
+  });
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log(values);
+    const {
+      castingTime,
+      specialCastingTime,
+      savingThrow,
+      specialSavingThrow,
+      schools,
+      spheres,
+      ...rest
+    } = values;
+    const spell = {
+      ...rest,
+      schools: schools.map((s) => s.value),
+      spheres: spheres?.map((s) => s.value),
+      castingTime:
+        castingTime === "special" ? specialCastingTime! : castingTime,
+      savingThrow:
+        savingThrow === "special" ? specialSavingThrow! : savingThrow,
+    };
+    createSpell.mutate(spell);
+    console.log(spell);
   }
   return (
     <div id="main-container" className="flex justify-center p-4">
