@@ -1,5 +1,23 @@
 # 2e Spells
 
+## Standards
+
+# Typography
+
+- 14px, 16px, 18px
+- Bold, Regular
+- 100% Lightness, 70% Lightness
+
+# Colors
+
+# Light theme
+
+- 100%
+- 90%
+- 50%
+- 10%
+
+# Dark theme
 
 ## TODO
 
