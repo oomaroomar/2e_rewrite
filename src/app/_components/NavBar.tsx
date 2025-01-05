@@ -1,10 +1,9 @@
-"use client";
-import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { auth, signOut } from "~/server/auth";
 
-export function TopNav() {
-  const { data: session } = useSession();
+export async function TopNav() {
+  const session = await auth();
   return (
     <nav className="grid w-full grid-cols-3 items-center border-b border-black p-1 text-lg">
       <div>Brand logo here</div>
@@ -22,14 +21,21 @@ export function TopNav() {
       </ul>
       <div className="justify-self-end hover:cursor-pointer">
         {session ? (
-          <div onClick={() => signOut()}>
-            <Avatar>
-              <AvatarImage src={session?.user?.image ?? undefined} />
-              <AvatarFallback>
-                {session?.user?.name ?? undefined}
-              </AvatarFallback>
-            </Avatar>
-          </div>
+          <form
+            action={async () => {
+              "use server";
+              await signOut();
+            }}
+          >
+            <button type="submit">
+              <Avatar>
+                <AvatarImage src={session?.user?.image ?? undefined} />
+                <AvatarFallback>
+                  {session?.user?.name ?? undefined}
+                </AvatarFallback>
+              </Avatar>
+            </button>
+          </form>
         ) : (
           <Link href={"/api/auth/signin"}>
             <div>Sign In</div>
