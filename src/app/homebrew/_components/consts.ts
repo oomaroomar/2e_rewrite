@@ -29,6 +29,7 @@ export const formSchema = spellSchema
     savingThrow: true,
     schools: true,
     spheres: true,
+    materials: true,
   })
   .extend({
     castingTime: z.enum(castingTimes),
@@ -49,4 +50,5 @@ export const formSchema = spellSchema
       })
       .array()
       .optional(),
+    materials: z.string().optional(),
   });

@@ -10,15 +10,17 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${GeistSans.variable}`}>
-      <body className="flex flex-col gap-4">
-        <TRPCReactProvider>
-          <SessionProvider>
-            <TopNav />
-            {children}
-          </SessionProvider>
-        </TRPCReactProvider>
-      </body>
-    </html>
+    <SessionProvider>
+      <TRPCReactProvider>
+        <html lang="en" className={`${GeistSans.variable}`}>
+          <body className="flex flex-col overflow-hidden">
+            <div className="grid h-screen grid-rows-[auto,1fr]">
+              <TopNav />
+              <main className="overflow-auto">{children}</main>
+            </div>
+          </body>
+        </html>
+      </TRPCReactProvider>
+    </SessionProvider>
   );
 }

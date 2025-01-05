@@ -80,7 +80,15 @@ export const castingTimes = [
 ] as const;
 export const spellLevels = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
 export const savingThrows = ["negate", "none", "1/2", "special"] as const;
-export const sources = ["PHB", "ToM", "S&M", "CWH", "user", "Koibu"] as const;
+export const sources = [
+  "PHB",
+  "ToM",
+  "S&M",
+  "CWH",
+  "user",
+  "Koibu",
+  "homebrew",
+] as const;
 
 export type Sphere = (typeof spheres)[number];
 export type School = (typeof schools)[number];
@@ -104,16 +112,18 @@ export const spellSchema = z.object({
   somatic: z.boolean().default(true),
   verbal: z.boolean().default(true),
   material: z.boolean().default(true),
-  materials: z.string().optional(),
+  materials: z.string(),
   aoe: z.string(),
   castingTime: z.string(),
   damage: z.string(),
-  duration: z.string().min(1, "Please provide a duration"),
-  range: z.string().min(1, "Please provide a range"),
   savingThrow: z.string(),
-  description: z.string().min(5, "Please provide a description"),
+  duration: z.string(),
+  range: z.string(),
+  description: z.string(),
   source: z.string(),
 });
+
+export type Spell = z.infer<typeof spellSchema>;
 
 export const batchSpellsSchema = spellSchema
   .omit({ source: true })

@@ -34,8 +34,11 @@ import {
   sphereOptions,
 } from "./_components/consts";
 import { api } from "~/trpc/react";
+import { useSession } from "next-auth/react";
+import Placeholder from "./_components/Placeholder";
 
 export default function Homebrew() {
+  const { data: session } = useSession();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -73,6 +76,7 @@ export default function Homebrew() {
       specialSavingThrow,
       schools,
       spheres,
+      materials,
       ...rest
     } = values;
     const spell = {
@@ -83,10 +87,21 @@ export default function Homebrew() {
         castingTime === "special" ? specialCastingTime! : castingTime,
       savingThrow:
         savingThrow === "special" ? specialSavingThrow! : savingThrow,
+      materials: materials ?? "",
     };
     createSpell.mutate(spell);
     console.log(spell);
   }
+
+  if (!session) {
+    return (
+      <Placeholder
+        className="text-zinc-900"
+        text="You need to be signed in to create a spell."
+      />
+    );
+  }
+
   return (
     <div id="main-container" className="flex justify-center p-4">
       <Form {...form}>
