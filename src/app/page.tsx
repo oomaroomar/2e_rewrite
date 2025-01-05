@@ -11,8 +11,6 @@ import { useState } from "react";
 import { type Spell } from "~/types";
 import Placeholder from "./homebrew/_components/Placeholder";
 
-export const dynamic = "force-dynamic";
-
 export default function HomePage() {
   const [spells] = api.spell.getSpells.useSuspenseQuery();
   const [fullDescSpells, setFullDescSpells] = useState<Spell[]>([]);
