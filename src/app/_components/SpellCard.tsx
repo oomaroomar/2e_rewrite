@@ -117,7 +117,11 @@ export function BigSpellCard({ spell }: Omit<SpellCardProps, "onClick">) {
         <div className="col-span-2 p-2 px-4 pt-0 text-lg">
           {" "}
           <b className="text-lg">Description: </b>
-          {spell.description}
+          {spell.description.map((paragraph, i) => (
+            <p className="mb-4" key={i}>
+              {paragraph}
+            </p>
+          ))}
         </div>
         <div className="px-4 pb-2 pt-0">
           {" "}
