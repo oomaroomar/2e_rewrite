@@ -4,22 +4,25 @@ import { GeistSans } from "geist/font/sans";
 import SessionProvider from "./_components/SessionProvider";
 import { TopNav } from "./_components/NavBar";
 import { TRPCReactProvider } from "~/trpc/react";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <SessionProvider>
-      <TRPCReactProvider>
-        <html lang="en" className={`${GeistSans.variable}`}>
-          <body className="flex flex-col overflow-hidden">
-            <div className="grid h-screen grid-rows-[auto,1fr]">
-              <TopNav />
-              <main className="overflow-auto">{children}</main>
-            </div>
-          </body>
-        </html>
-      </TRPCReactProvider>
-    </SessionProvider>
+    <html lang="en" className={`${GeistSans.variable}`}>
+      <SessionProvider>
+        <TRPCReactProvider>
+          <NuqsAdapter>
+            <body className="flex flex-col overflow-hidden">
+              <div className="grid h-screen grid-rows-[auto,1fr]">
+                <TopNav />
+                <main className="overflow-auto">{children}</main>
+              </div>
+            </body>
+          </NuqsAdapter>
+        </TRPCReactProvider>
+      </SessionProvider>
+    </html>
   );
 }

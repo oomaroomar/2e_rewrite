@@ -25,7 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { capitalize } from "~/lib/utils";
+import { capitalize } from "~/utils";
 import { Button } from "~/components/ui/button";
 import {
   fireballText,
@@ -35,7 +35,7 @@ import {
 } from "./_components/consts";
 import { api } from "~/trpc/react";
 import { useSession } from "next-auth/react";
-import Placeholder from "./_components/Placeholder";
+import Placeholder from "../_components/Placeholder";
 
 export default function Homebrew() {
   const { data: session } = useSession();
