@@ -7,7 +7,7 @@ import { Button } from "~/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "~/trpc/react";
 
-import { batchSpellsSchema } from "~/types";
+import { preBatchSpellSchema } from "~/types";
 
 const batchFormSchema = z.object({
   spellJson: z.string().min(5, { message: "Input empty" }),
@@ -23,8 +23,7 @@ export default function BatchHomebrew() {
   });
 
   async function onSubmit(values: z.infer<typeof batchFormSchema>) {
-    console.log(values);
-    const parsed = batchSpellsSchema.safeParse(JSON.parse(values.spellJson));
+    const parsed = preBatchSpellSchema.safeParse(JSON.parse(values.spellJson));
     if (!parsed.success) {
       console.error(parsed.error.errors);
       form.setError("spellJson", {
@@ -33,7 +32,11 @@ export default function BatchHomebrew() {
       });
       return;
     }
-    createSpells.mutate(parsed.data);
+    const spells = parsed.data.map((spell) => ({
+      ...spell,
+      description: spell.description.split("\n").filter((line) => line !== ""),
+    }));
+    createSpells.mutate(spells);
     console.log(parsed);
   }
   return (

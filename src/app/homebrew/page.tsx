@@ -77,6 +77,7 @@ export default function Homebrew() {
       schools,
       spheres,
       materials,
+      description,
       ...rest
     } = values;
     const spell = {
@@ -88,6 +89,7 @@ export default function Homebrew() {
       savingThrow:
         savingThrow === "special" ? specialSavingThrow! : savingThrow,
       materials: materials ?? "",
+      description: description.split("\n").filter((p) => p !== ""),
     };
     createSpell.mutate(spell);
     console.log(spell);

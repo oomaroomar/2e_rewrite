@@ -11,9 +11,10 @@ import {
 import { BorderedSearchBarBtn } from "./SearchBarBtn";
 import { LevelFilterButton, SchoolFilterButton } from "./FilterButton";
 import { parseAsJson, useQueryState } from "nuqs";
+import { Button } from "~/components/ui/button";
 
 export function SearchBar({ openSearch }: { openSearch: () => void }) {
-  const [, setFilters] = useQueryState(
+  const [filters, setFilters] = useQueryState(
     "filters",
     // eslint-disable-next-line @typescript-eslint/unbound-method
     parseAsJson(filterSchema.parse).withDefault({
@@ -76,6 +77,7 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
       <ul className="flex gap-x-1">
         {schools.map((school) => (
           <SchoolFilterButton
+            pressed={!filters.schools.includes(school)}
             school={school}
             onClick={() => toggleSchool(school)}
             key={school}
@@ -84,12 +86,27 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
       </ul>
       <ul className="flex gap-x-1">
         {spellLevels.map((level) => (
-          <LevelFilterButton key={level} onClick={() => toggleLevel(level)}>
+          <LevelFilterButton
+            pressed={filters.levels.includes(level)}
+            key={level}
+            onClick={() => toggleLevel(level)}
+          >
             {level}
           </LevelFilterButton>
         ))}
       </ul>
-
+      <Button
+        onClick={() =>
+          setFilters({
+            levels: [],
+            schools: [...schools],
+            damaging: "any",
+            components: [],
+          })
+        }
+      >
+        Reset filters
+      </Button>
       {/* <div>additional filters</div> */}
     </nav>
   );

@@ -98,22 +98,31 @@ export function ExistingFilters({
 export function LevelFilterButton({
   onClick,
   children,
+  pressed,
 }: {
   onClick: () => void;
   children: React.ReactNode;
+  pressed: boolean;
 }) {
-  return <Toggle onClick={onClick}>{children}</Toggle>;
+  return (
+    <Toggle pressed={pressed} onClick={onClick}>
+      {children}
+    </Toggle>
+  );
 }
 
 export function SchoolFilterButton({
   onClick,
   school,
+  pressed,
 }: {
   onClick: () => void;
   school: School;
+  pressed: boolean;
 }) {
   return (
     <Toggle
+      pressed={pressed}
       onClick={onClick}
       className={`bg-${school} data-[state=on]:bg-white`}
     >

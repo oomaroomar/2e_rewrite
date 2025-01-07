@@ -46,7 +46,7 @@ export const spells = createTable(
     duration: text("duration").notNull().default(""),
     savingThrow: text("savingThrow").notNull().default(""),
     damage: text("damage").notNull().default(""),
-    description: text("description").notNull().default(""),
+    description: text("description").array().notNull().default([]),
     source: sourceEnum("source").notNull().default("homebrew"),
     spheres: sphereEnum("spheres")
       .array()

@@ -117,7 +117,7 @@ export const spellSchema = z.object({
   savingThrow: z.string(),
   duration: z.string(),
   range: z.string(),
-  description: z.string(),
+  description: z.array(z.string()),
   source: z.string(),
 });
 
@@ -126,4 +126,9 @@ export type Spell = z.infer<typeof spellSchema> & { id: number };
 export const batchSpellsSchema = spellSchema
   .omit({ source: true })
   .extend({ source: z.enum(sources) })
+  .array();
+
+export const preBatchSpellSchema = spellSchema
+  .omit({ source: true, description: true })
+  .extend({ source: z.enum(sources), description: z.string() })
   .array();
