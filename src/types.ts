@@ -1,17 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/consistent-type-imports */
-import { DefaultSession } from "next-auth";
 import { z } from "zod";
-
-// declare module "next-auth" {
-//   interface Session {
-//     user: {
-//       id?: string;
-//     } & DefaultSession["user"];
-//   }
-// }
-
-// Spell stuff below
 
 export const spheres = [
   "All",
@@ -50,8 +37,8 @@ export const schools = [
   "conjuration",
   "divination",
   "enchantment",
-  "invocation",
   "illusion",
+  "invocation",
   "necromancy",
 ] as const;
 export const schoolLabels = [
@@ -89,6 +76,8 @@ export const sources = [
   "Koibu",
   "homebrew",
 ] as const;
+export const dmgOptions = ["damaging", "non-damaging", "any"] as const;
+export const components = ["somatic", "verbal", "material"] as const;
 
 export type Sphere = (typeof spheres)[number];
 export type School = (typeof schools)[number];
@@ -96,6 +85,15 @@ export type CastingClass = (typeof castingClasses)[number];
 export type SpellLevel = (typeof spellLevels)[number];
 export type SavingThrow = (typeof savingThrows)[number];
 export type Source = (typeof sources)[number];
+export type DmgOption = (typeof dmgOptions)[number];
+export type SpellComponent = (typeof components)[number];
+
+export const filterSchema = z.object({
+  components: z.array(z.enum(components)),
+  damaging: z.enum(dmgOptions),
+  schools: z.array(z.enum(schools)),
+  levels: z.array(z.number().min(1).max(9)),
+});
 
 export const spellSchema = z.object({
   name: z
@@ -123,7 +121,7 @@ export const spellSchema = z.object({
   source: z.string(),
 });
 
-export type Spell = z.infer<typeof spellSchema>;
+export type Spell = z.infer<typeof spellSchema> & { id: number };
 
 export const batchSpellsSchema = spellSchema
   .omit({ source: true })

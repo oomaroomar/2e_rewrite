@@ -1,4 +1,4 @@
-import { cn } from "~/lib/utils";
+import { cn } from "~/utils";
 
 export default function Placeholder({
   text,
@@ -10,7 +10,7 @@ export default function Placeholder({
   return (
     <div
       className={cn(
-        "flex h-full place-content-center place-items-center text-center text-6xl text-slate-300",
+        "flex h-full w-full place-content-center place-items-center text-center text-6xl text-slate-300",
         className,
       )}
     >
