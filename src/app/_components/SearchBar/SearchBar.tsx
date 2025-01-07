@@ -63,7 +63,7 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
   }
 
   return (
-    <nav className="w-full items-center gap-x-4 border-b border-black px-2 py-2 text-xl md:flex">
+    <nav className="hidden w-full items-center gap-x-4 border-b border-black px-2 py-2 text-xl md:flex">
       <BorderedSearchBarBtn
         text="Quick search..."
         text2="Ctrl + K"

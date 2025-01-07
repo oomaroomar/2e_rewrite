@@ -90,19 +90,16 @@ export default function SpellPage() {
       <ResizablePanelGroup className="w-full" direction="horizontal">
         <ResizablePanel
           style={{ overflow: "auto" }}
-          className="overflow-auto pb-8"
+          className="hidden overflow-auto pb-8 md:flex"
           defaultSize={50}
         >
-          <div className="flex flex-wrap">
+          <div className="flex flex-col">
             {fullDescSpells.length > 0 ? (
               fullDescSpells.map((spell, i) => (
                 <BigSpellCard key={i} spell={spell} />
               ))
             ) : (
-              <Placeholder
-                className="mt-36"
-                text="Click a spell to view its entire details."
-              />
+              <Placeholder text="Click a spell to view its entire details." />
             )}
           </div>
         </ResizablePanel>
