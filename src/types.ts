@@ -132,3 +132,15 @@ export const preBatchSpellSchema = spellSchema
   .omit({ source: true, description: true })
   .extend({ source: z.enum(sources), description: z.string() })
   .array();
+
+export const specFilters = {
+  alteration: ["abjuration", "necromancy"],
+  abjuration: ["alteration", "illusion"],
+  conjuration: ["divination", "invocation"],
+  divination: ["conjuration"],
+  enchantment: ["invocation", "necromancy"],
+  invocation: ["enchantment", "conjuration"],
+  illusion: ["necromancy", "invocation", "abjuration"],
+  necromancy: ["illusion", "enchantment"],
+  "": [],
+} as const;

@@ -1,14 +1,24 @@
-import { type Spell } from "~/types";
+import { type School, type Spell } from "~/types";
 
-interface SpellCardProps {
-  spell: Spell;
-  appendFullDescSpell: (s: Spell) => void;
+// S might contain extra fields like createdAt, updatedAt, etc.
+interface SpellCardProps<S extends Spell> {
+  spell: S;
+  appendFullDescSpell: (s: S) => void;
 }
 
-export default function SearchResult({
+interface SpecializationResultProps {
+  school: School;
+  setSchoolFilters: (schools: School[]) => void;
+}
+
+// export function SpecializationResult({school, setSchoolFilters}: SpecializationResultProps) {
+
+// }
+
+export function SpellResult<S extends Spell>({
   spell,
   appendFullDescSpell,
-}: SpellCardProps) {
+}: SpellCardProps<S>) {
   return (
     <div
       className="container w-full p-3"

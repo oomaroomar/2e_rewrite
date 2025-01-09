@@ -70,10 +70,7 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
         text2="Ctrl + K"
         onClick={openSearch}
       />
-      {/* <BorderedSearchBarBtn
-        text="Specialization"
-        onClick={() => console.log("boop")}
-      /> */}
+      <BorderedSearchBarBtn text="Specialization" onClick={openSearch} />
       <ul className="flex gap-x-1">
         {schools.map((school) => (
           <SchoolFilterButton
