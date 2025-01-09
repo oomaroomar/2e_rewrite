@@ -1,4 +1,5 @@
 import { type School, type Spell } from "~/types";
+import { capitalize } from "~/utils";
 
 // S might contain extra fields like createdAt, updatedAt, etc.
 interface SpellCardProps<S extends Spell> {
@@ -7,13 +8,27 @@ interface SpellCardProps<S extends Spell> {
 }
 
 interface SpecializationResultProps {
-  school: School;
-  setSchoolFilters: (schools: School[]) => void;
+  school: { id: School };
+  setSchoolFilters: (school: { id: School }) => void;
 }
 
-// export function SpecializationResult({school, setSchoolFilters}: SpecializationResultProps) {
-
-// }
+export function SpecializationResult({
+  school,
+  setSchoolFilters,
+}: SpecializationResultProps) {
+  return (
+    <div
+      className="container w-full p-3"
+      onClick={() => setSchoolFilters(school)}
+    >
+      <div
+        className={`grid grid-cols-2 gap-y-2 rounded-xl p-4 bg-${school.id} text-black hover:shadow-md hover:shadow-${school.id}`}
+      >
+        {capitalize(school.id)}
+      </div>
+    </div>
+  );
+}
 
 export function SpellResult<S extends Spell>({
   spell,

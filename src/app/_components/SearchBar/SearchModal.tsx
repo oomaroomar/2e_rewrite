@@ -1,6 +1,6 @@
 import { Magnifier } from "~/svgs";
 import { type FormEvent, type RefObject, useState, useTransition } from "react";
-import Fuse from "fuse.js";
+import Fuse, { type IFuseOptions } from "fuse.js";
 import { useEscapeKey } from "~/hooks/useEscapeKey";
 
 interface SearchModalProps<T extends { id: number | string }> {
@@ -8,11 +8,12 @@ interface SearchModalProps<T extends { id: number | string }> {
   setClosed: () => void;
   searchables: T[];
   handleSelect: (s: T) => void;
-  searchKey: string;
+  searchKey?: string;
   SearchItem: React.ComponentType<{
     item: T;
     onSelect: (item: T) => void;
   }>;
+  fuseOptions?: IFuseOptions<T>;
 }
 
 export default function SearchModal<T extends { id: number | string }>({
@@ -22,6 +23,7 @@ export default function SearchModal<T extends { id: number | string }>({
   handleSelect,
   searchKey,
   SearchItem,
+  fuseOptions,
 }: SearchModalProps<T>) {
   const [searchPattern, setSearchPattern] = useState<string>("");
   const [, startTransition] = useTransition();
@@ -40,11 +42,16 @@ export default function SearchModal<T extends { id: number | string }>({
     }
   };
 
-  const fuse = new Fuse<T>(searchables, {
-    keys: [searchKey],
-    minMatchCharLength: 2,
-    threshold: 0.4,
-  });
+  const fuse = new Fuse<T>(
+    searchables,
+    fuseOptions ?? {
+      keys: [searchKey ?? "id"],
+      minMatchCharLength: 2,
+      threshold: 0.4,
+    },
+  );
+
+  console.log(searchables);
 
   return (
     <div className="p-12vh absolute left-0 top-28 z-40 mx-auto hidden max-h-96 w-full flex-col lg:flex">
@@ -79,18 +86,26 @@ export default function SearchModal<T extends { id: number | string }>({
         </header>
         <div className="flex flex-auto overflow-auto px-2">
           <div className="longlist w-full pb-6">
-            {fuse.search(searchPattern).map((result) => {
-              if (result === undefined) {
-                return null;
-              }
-              return (
-                <SearchItem
-                  key={result.item.id}
-                  item={result.item}
-                  onSelect={handleSelect}
-                />
-              );
-            })}
+            {fuseOptions?.minMatchCharLength === 0 && searchPattern.length === 0
+              ? searchables.map((item) => (
+                  <SearchItem
+                    key={item.id}
+                    item={item}
+                    onSelect={handleSelect}
+                  />
+                ))
+              : fuse.search(searchPattern).map((result) => {
+                  if (result === undefined) {
+                    return null;
+                  }
+                  return (
+                    <SearchItem
+                      key={result.item.id}
+                      item={result.item}
+                      onSelect={handleSelect}
+                    />
+                  );
+                })}
           </div>
         </div>
       </div>
