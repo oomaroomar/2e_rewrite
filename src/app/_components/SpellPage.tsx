@@ -14,6 +14,7 @@ import SearchModal from "~/app/_components/SearchBar/SearchModal";
 import useModal from "~/app/_components/hooks/useModal";
 import { parseAsJson, useQueryState } from "nuqs";
 import { getComponentsArray, isSubset } from "~/utils";
+import { SpellResult } from "./SearchBar/SearchResult";
 
 export default function SpellPage() {
   const searchModalRef = useRef<HTMLInputElement>(null);
@@ -131,12 +132,14 @@ export default function SpellPage() {
       </ResizablePanelGroup>
       {isSearchOpen && (
         <SearchModal
-          setClosed={() => setSearchOpen(false)}
+          searchables={spells}
           modalRef={searchModalRef}
-          appendFullDescSpell={(sp) =>
-            setFullDescSpells((prev) => [sp, ...prev])
-          }
-          spells={spells}
+          setClosed={() => setSearchOpen(false)}
+          handleSelect={(sp) => setFullDescSpells((prev) => [sp, ...prev])}
+          searchKey="name"
+          SearchItem={({ item, onSelect }) => (
+            <SpellResult spell={item} appendFullDescSpell={onSelect} />
+          )}
         />
       )}
     </main>

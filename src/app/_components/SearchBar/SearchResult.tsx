@@ -1,14 +1,39 @@
-import { type Spell } from "~/types";
+import { type School, type Spell } from "~/types";
+import { capitalize } from "~/utils";
 
-interface SpellCardProps {
-  spell: Spell;
-  appendFullDescSpell: (s: Spell) => void;
+// S might contain extra fields like createdAt, updatedAt, etc.
+interface SpellCardProps<S extends Spell> {
+  spell: S;
+  appendFullDescSpell: (s: S) => void;
 }
 
-export default function SearchResult({
+interface SpecializationResultProps {
+  school: { id: School };
+  setSchoolFilters: (school: { id: School }) => void;
+}
+
+export function SpecializationResult({
+  school,
+  setSchoolFilters,
+}: SpecializationResultProps) {
+  return (
+    <div
+      className="container w-full p-3"
+      onClick={() => setSchoolFilters(school)}
+    >
+      <div
+        className={`grid grid-cols-2 gap-y-2 rounded-xl p-4 bg-${school.id} text-black hover:shadow-md hover:shadow-${school.id}`}
+      >
+        {capitalize(school.id)}
+      </div>
+    </div>
+  );
+}
+
+export function SpellResult<S extends Spell>({
   spell,
   appendFullDescSpell,
-}: SpellCardProps) {
+}: SpellCardProps<S>) {
   return (
     <div
       className="container w-full p-3"

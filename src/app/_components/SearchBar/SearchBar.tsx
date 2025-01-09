@@ -7,13 +7,20 @@ import {
   type DmgOption,
   type SpellComponent,
   spellLevels,
+  specFilters,
 } from "~/types";
 import { BorderedSearchBarBtn } from "./SearchBarBtn";
 import { LevelFilterButton, SchoolFilterButton } from "./FilterButton";
 import { parseAsJson, useQueryState } from "nuqs";
 import { Button } from "~/components/ui/button";
+import { useRef } from "react";
+import SearchModal from "./SearchModal";
+import { SpecializationResult } from "./SearchResult";
+import useModal from "../hooks/useModal";
 
 export function SearchBar({ openSearch }: { openSearch: () => void }) {
+  const searchModalRef = useRef<HTMLInputElement>(null);
+  const [isSearchOpen, setSearchOpen] = useModal({ modalRef: searchModalRef });
   const [filters, setFilters] = useQueryState(
     "filters",
     // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -70,10 +77,10 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
         text2="Ctrl + K"
         onClick={openSearch}
       />
-      {/* <BorderedSearchBarBtn
+      <BorderedSearchBarBtn
         text="Specialization"
-        onClick={() => console.log("boop")}
-      /> */}
+        onClick={() => setSearchOpen(true)}
+      />
       <ul className="flex gap-x-1">
         {schools.map((school) => (
           <SchoolFilterButton
@@ -108,6 +115,22 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
         Reset filters
       </Button>
       {/* <div>additional filters</div> */}
+      {isSearchOpen && (
+        <SearchModal
+          searchables={[...schools.map((s) => ({ id: s }))]}
+          modalRef={searchModalRef}
+          setClosed={() => setSearchOpen(false)}
+          handleSelect={(sc) => setSchools([...specFilters[sc.id]])}
+          fuseOptions={{
+            keys: ["id"],
+            threshold: 0.6,
+            minMatchCharLength: 0,
+          }}
+          SearchItem={({ item, onSelect }) => (
+            <SpecializationResult school={item} setSchoolFilters={onSelect} />
+          )}
+        />
+      )}
     </nav>
   );
 }

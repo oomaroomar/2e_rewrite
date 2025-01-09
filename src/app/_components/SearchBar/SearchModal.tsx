@@ -1,65 +1,57 @@
 import { Magnifier } from "~/svgs";
-import {
-  type FormEvent,
-  type RefObject,
-  useCallback,
-  useEffect,
-  useState,
-  useTransition,
-} from "react";
-import Fuse from "fuse.js";
-import SearchResult from "./SearchResult";
-import { type Spell } from "~/types";
+import { type FormEvent, type RefObject, useState, useTransition } from "react";
+import Fuse, { type IFuseOptions } from "fuse.js";
+import { useEscapeKey } from "~/hooks/useEscapeKey";
 
-interface SearchModalProps {
+interface SearchModalProps<T extends { id: number | string }> {
   modalRef: RefObject<HTMLDivElement>;
   setClosed: () => void;
-  spells: Spell[];
-  appendFullDescSpell: (s: Spell) => void;
+  searchables: T[];
+  handleSelect: (s: T) => void;
+  searchKey?: string;
+  SearchItem: React.ComponentType<{
+    item: T;
+    onSelect: (item: T) => void;
+  }>;
+  fuseOptions?: IFuseOptions<T>;
 }
 
-export default function SearchModal({
+export default function SearchModal<T extends { id: number | string }>({
   modalRef,
   setClosed,
-  spells,
-  appendFullDescSpell,
-}: SearchModalProps) {
+  searchables,
+  handleSelect,
+  searchKey,
+  SearchItem,
+  fuseOptions,
+}: SearchModalProps<T>) {
   const [searchPattern, setSearchPattern] = useState<string>("");
   const [, startTransition] = useTransition();
 
-  const handleEscPress = useCallback(
-    (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        if (searchPattern === "") {
-          setClosed();
-        } else {
-          setSearchPattern("");
-        }
-      }
-    },
-    [setClosed, setSearchPattern, searchPattern],
-  );
+  useEscapeKey({
+    onEscape: setClosed,
+    onEscapeWithCondition: () => setSearchPattern(""),
+    condition: searchPattern === "",
+  });
 
   const handleEnter = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const topResult = fuse.search(searchPattern)[0];
     if (topResult) {
-      appendFullDescSpell(topResult.item);
+      handleSelect(topResult.item);
     }
   };
 
-  useEffect(() => {
-    document.addEventListener("keydown", handleEscPress);
-    return () => {
-      document.removeEventListener("keydown", handleEscPress);
-    };
-  }, [handleEscPress]);
+  const fuse = new Fuse<T>(
+    searchables,
+    fuseOptions ?? {
+      keys: [searchKey ?? "id"],
+      minMatchCharLength: 2,
+      threshold: 0.4,
+    },
+  );
 
-  const fuse = new Fuse(spells, {
-    keys: ["name"],
-    minMatchCharLength: 2,
-    threshold: 0.4,
-  });
+  console.log(searchables);
 
   return (
     <div className="p-12vh absolute left-0 top-28 z-40 mx-auto hidden max-h-96 w-full flex-col lg:flex">
@@ -94,19 +86,26 @@ export default function SearchModal({
         </header>
         <div className="flex flex-auto overflow-auto px-2">
           <div className="longlist w-full pb-6">
-            {fuse.search(searchPattern).map((spell) => {
-              if (spell === undefined) {
-                return null;
-              } else {
-                return (
-                  <SearchResult
-                    key={spell.item.id}
-                    appendFullDescSpell={appendFullDescSpell}
-                    spell={spell.item}
+            {fuseOptions?.minMatchCharLength === 0 && searchPattern.length === 0
+              ? searchables.map((item) => (
+                  <SearchItem
+                    key={item.id}
+                    item={item}
+                    onSelect={handleSelect}
                   />
-                );
-              }
-            })}
+                ))
+              : fuse.search(searchPattern).map((result) => {
+                  if (result === undefined) {
+                    return null;
+                  }
+                  return (
+                    <SearchItem
+                      key={result.item.id}
+                      item={result.item}
+                      onSelect={handleSelect}
+                    />
+                  );
+                })}
           </div>
         </div>
       </div>
