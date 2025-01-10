@@ -7,8 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { api } from "~/trpc/server";
 import CreateCharacterForm from "./_components/CreateCharacterForm";
 import CharacterList from "./_components/CharacterList";
-import { SpellCheck } from "lucide-react";
-import SpellPage from "../_components/SpellPage";
+import SpellPage from "../_components/SpellPage/SpellPageContainer";
+import SpellPageWrapper from "./_components/SpellPageWrapper";
 
 export default async function LibraryPage() {
   void api.character.getMyCharacters.prefetch();
@@ -48,7 +48,7 @@ export default async function LibraryPage() {
             </ResizablePanel>
             <ResizableHandle withHandle />
             <ResizablePanel defaultSize={80}>
-              <SpellPage />
+              <SpellPageWrapper />
             </ResizablePanel>
           </ResizablePanelGroup>
         </ResizablePanel>

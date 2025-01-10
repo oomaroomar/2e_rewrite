@@ -17,6 +17,11 @@ export async function TopNav() {
           </Link>
         </li>
         <li>
+          <Link className="hover:text-pink-500" href={"/library"}>
+            Spellbook manager
+          </Link>
+        </li>
+        <li>
           <Link className="hover:text-pink-500" href={"/homebrew"}>
             Create a spell
           </Link>

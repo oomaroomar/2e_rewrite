@@ -1,3 +1,5 @@
+import { eq } from "drizzle-orm";
+
 import { z } from "zod";
 
 import {
@@ -5,7 +7,7 @@ import {
   protectedProcedure,
   // publicProcedure,
 } from "~/server/api/trpc";
-import { characters } from "~/server/db/schema/characters";
+import { characters, learnedSpells } from "~/server/db/schema/characters";
 
 export const characterRouter = createTRPCRouter({
   createCharacter: protectedProcedure
@@ -17,11 +19,28 @@ export const characterRouter = createTRPCRouter({
       });
     }),
   getMyCharacters: protectedProcedure.query(async ({ ctx }) => {
-    const characters = await ctx.db.query.characters.findMany({
-      where: (characters, { eq }) => eq(characters.userId, ctx.session.user.id),
-      with: { learnedSpells: true, books: true },
-      orderBy: (characters, { desc }) => [desc(characters.createdAt)],
-    });
-    return characters ?? [];
+    const chars = await ctx.db
+      .select()
+      .from(characters)
+      .where(eq(characters.userId, ctx.session.user.id));
+    const learned = await ctx.db
+      .select()
+      .from(learnedSpells)
+      .where(eq(learnedSpells.userId, ctx.session.user.id));
+    return { chars, learned };
   }),
+  learnSpell: protectedProcedure
+    .input(
+      z.object({
+        spellId: z.number(),
+        characterId: z.number(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.insert(learnedSpells).values({
+        userId: ctx.session.user.id,
+        spellId: input.spellId,
+        charId: input.characterId,
+      });
+    }),
 });

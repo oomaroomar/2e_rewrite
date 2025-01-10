@@ -6,7 +6,8 @@ import { Separator } from "~/components/ui/separator";
 import { api } from "~/trpc/react";
 
 export default function CharacterList() {
-  const [characters] = api.character.getMyCharacters.useSuspenseQuery();
+  const [{ chars: characters }] =
+    api.character.getMyCharacters.useSuspenseQuery();
   const [character, setCharacter] = useQueryState("character", parseAsInteger);
 
   return (
