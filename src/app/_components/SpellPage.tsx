@@ -86,7 +86,7 @@ export default function SpellPage() {
   }, [ctrlK]);
 
   return (
-    <main className="grid h-full w-screen grid-rows-[auto,1fr]">
+    <div className="grid h-full w-full grid-rows-[auto,1fr]">
       <SearchBar openSearch={() => setSearchOpen(true)} />
       <ResizablePanelGroup className="w-full" direction="horizontal">
         <ResizablePanel
@@ -142,6 +142,6 @@ export default function SpellPage() {
           )}
         />
       )}
-    </main>
+    </div>
   );
 }

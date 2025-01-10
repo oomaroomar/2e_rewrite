@@ -4,12 +4,13 @@ import {
   primaryKey,
   serial,
   smallint,
+  timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
 import { createTable } from "~/utils/createTable";
 import { users } from "./users";
 import { spells } from "./spells";
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 
 export const characters = createTable(
   "character",
@@ -20,6 +21,9 @@ export const characters = createTable(
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     name: varchar("name", { length: 255 }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
   },
   (character) => ({
     characterUserIndex: index("character_user_index").on(character.userId),
