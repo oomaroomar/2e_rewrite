@@ -19,15 +19,18 @@ export const characterRouter = createTRPCRouter({
       });
     }),
   getMyCharacters: protectedProcedure.query(async ({ ctx }) => {
-    const chars = await ctx.db
-      .select()
-      .from(characters)
-      .where(eq(characters.userId, ctx.session.user.id));
-    const learned = await ctx.db
-      .select()
-      .from(learnedSpells)
-      .where(eq(learnedSpells.userId, ctx.session.user.id));
-    return { chars, learned };
+    const chars = await ctx.db.query.characters.findMany({
+      where: eq(characters.userId, ctx.session.user.id),
+      with: {
+        learnedSpells: {
+          with: {
+            spell: true,
+          },
+        },
+      },
+    });
+
+    return chars;
   }),
   learnSpell: protectedProcedure
     .input(

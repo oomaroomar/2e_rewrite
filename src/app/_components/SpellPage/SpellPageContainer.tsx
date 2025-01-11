@@ -13,11 +13,12 @@ export default function SpellPage({
 }: {
   magics?: Spell[];
   learnSpell?: (spell: Spell) => void;
+  defaultShowLearnedOnly?: boolean;
 }) {
   const searchModalRef = useRef<HTMLInputElement>(null);
   const [isSearchOpen, setSearchOpen] = useModal({ modalRef: searchModalRef });
-  const [spells] = magics ? [magics] : api.spell.getSpells.useSuspenseQuery();
   const [fullDescSpells, setFullDescSpells] = useState<Spell[]>([]);
+  const [spells] = api.spell.getSpells.useSuspenseQuery();
   const [filters, setFilters] = useQueryState(
     "filters",
     // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -28,11 +29,6 @@ export default function SpellPage({
       components: [],
     }),
   );
-
-  const appendFullDescSpell = (sp: Spell) => {
-    setFullDescSpells((prev) => [sp, ...prev]);
-  };
-
   const ctrlK = useCallback(
     (event: KeyboardEvent) => {
       if (event.ctrlKey && event.key === "k") {
@@ -42,13 +38,19 @@ export default function SpellPage({
     },
     [isSearchOpen, setSearchOpen],
   );
-
   useEffect(() => {
     document.addEventListener("keydown", ctrlK);
     return () => document.removeEventListener("keydown", ctrlK);
   }, [ctrlK]);
 
-  const filteredSpells = spells.filter((spell) => filterSpells(spell, filters));
+  const appendFullDescSpell = (sp: Spell) => {
+    setFullDescSpells((prev) => [sp, ...prev]);
+  };
+
+  const finalSpells = magics ? magics : spells;
+  const filteredSpells = finalSpells.filter((spell) =>
+    filterSpells(spell, filters),
+  );
 
   return (
     <SpellPagePresentation
@@ -56,7 +58,7 @@ export default function SpellPage({
       fullDescSpells={fullDescSpells}
       isSearchOpen={isSearchOpen}
       searchModalRef={searchModalRef}
-      allSpells={spells}
+      allSpells={finalSpells}
       appendFullDescSpell={appendFullDescSpell}
       setSearchOpen={setSearchOpen}
       learnSpell={learnSpell}
