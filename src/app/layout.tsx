@@ -5,6 +5,7 @@ import SessionProvider from "./_components/SessionProvider";
 import { TopNav } from "./_components/NavBar";
 import { TRPCReactProvider } from "~/trpc/react";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { DescriptionListProvider } from "./_components/contexts/FullDescSpells";
 
 export default function RootLayout({
   children,
@@ -14,12 +15,14 @@ export default function RootLayout({
       <SessionProvider>
         <TRPCReactProvider>
           <NuqsAdapter>
-            <body className="flex flex-col overflow-hidden">
-              <div className="grid h-screen grid-rows-[auto,1fr]">
-                <TopNav />
-                <main className="overflow-auto">{children}</main>
-              </div>
-            </body>
+            <DescriptionListProvider>
+              <body className="flex flex-col overflow-hidden">
+                <div className="grid h-screen grid-rows-[auto,1fr]">
+                  <TopNav />
+                  <main className="overflow-auto">{children}</main>
+                </div>
+              </body>
+            </DescriptionListProvider>
           </NuqsAdapter>
         </TRPCReactProvider>
       </SessionProvider>
