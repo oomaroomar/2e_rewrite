@@ -23,6 +23,12 @@ import SearchModal from "./SearchModal";
 import { SpecializationResult } from "./SearchResult";
 import useModal from "../hooks/useModal";
 import { Switch } from "~/components/ui/switch";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 
 export function SearchBar({ openSearch }: { openSearch: () => void }) {
   const searchModalRef = useRef<HTMLInputElement>(null);
@@ -114,10 +120,13 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
         ))}
       </ul>
       {character && (
-        <Switch
-          checked={showLearnedOnly ?? false}
-          onCheckedChange={setShowLearnedOnly}
-        />
+        <div className="flex items-center gap-x-2">
+          <h4 className="text-sm">Toggle between learned only/all</h4>
+          <Switch
+            checked={showLearnedOnly ?? false}
+            onCheckedChange={setShowLearnedOnly}
+          />
+        </div>
       )}
       <Button
         onClick={() =>

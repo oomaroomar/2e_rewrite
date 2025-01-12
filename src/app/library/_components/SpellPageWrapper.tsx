@@ -13,6 +13,7 @@ export default function SpellPageWrapper() {
   const { mutate } = api.character.learnSpell.useMutation({
     onSuccess: async () => {
       await utils.character.getMyCharacters.invalidate();
+      alert("Spell learned");
     },
   });
   // console.log(data);

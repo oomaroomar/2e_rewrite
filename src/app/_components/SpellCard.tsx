@@ -68,7 +68,7 @@ export function BigSpellCard({ spell, onClick }: BigSpellCardProps) {
             <b>{spell.name}</b>
           </div>
           <div></div>
-          <div>
+          <div className="hover:cursor-pointer">
             {onClick ? <b onClick={() => onClick(spell)}>learn spell</b> : null}
           </div>
           <div className="px-4 py-1">

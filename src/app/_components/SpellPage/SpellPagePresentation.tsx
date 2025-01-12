@@ -76,7 +76,7 @@ export default function SpellPagePresentation({
           handleSelect={appendFullDescSpell}
           searchKey="name"
           SearchItem={({ item, onSelect }) => (
-            <SpellResult spell={item} appendFullDescSpell={onSelect} />
+            <SpellResult spell={item} onClick={onSelect} />
           )}
         />
       )}

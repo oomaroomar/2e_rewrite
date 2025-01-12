@@ -4,16 +4,13 @@ import {
   ResizableHandle,
 } from "~/components/ui/resizable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { api } from "~/trpc/server";
 import CreateCharacterForm from "./_components/CreateCharacterForm";
 import CharacterList from "./_components/CharacterList";
 import SpellPageWrapper from "./_components/SpellPageWrapper";
-import PreparedLevelSpellTable from "./_components/PreparedLevelSpellTable";
+import PreparedLevelSpellTable from "./_components/PreparedSpellSwappy";
 import { Suspense } from "react";
 
 export default async function LibraryPage() {
-  void api.character.getMyCharacters.prefetch();
-
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <div className="h-full w-full">
@@ -42,7 +39,12 @@ export default async function LibraryPage() {
               </ResizablePanel>
               <ResizableHandle className="" />
               <ResizablePanel className="p-4" defaultSize={70}>
-                <h1 className="text-lg font-bold">Prepared Spells</h1>
+                <div>
+                  <h1 className="text-lg font-bold">Prepared Spells </h1>
+                  <h3 className="text-base font-normal text-red-600">
+                    (Reordering spells currently broken)
+                  </h3>
+                </div>
                 <PreparedLevelSpellTable />
               </ResizablePanel>
             </ResizablePanelGroup>
