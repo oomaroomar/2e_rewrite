@@ -23,12 +23,6 @@ import SearchModal from "./SearchModal";
 import { SpecializationResult } from "./SearchResult";
 import useModal from "../hooks/useModal";
 import { Switch } from "~/components/ui/switch";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "~/components/ui/tooltip";
 
 export function SearchBar({ openSearch }: { openSearch: () => void }) {
   const searchModalRef = useRef<HTMLInputElement>(null);

@@ -8,6 +8,7 @@ import { Form } from "~/components/ui/form";
 import { FormField } from "~/app/homebrew/_components/FormField";
 import { Button } from "~/components/ui/button";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -16,6 +17,7 @@ const formSchema = z.object({
 export default function CreateCharacterForm() {
   const router = useRouter();
   const utils = api.useUtils();
+  const { data: session } = useSession();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { name: "" },
@@ -29,6 +31,10 @@ export default function CreateCharacterForm() {
   );
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
+    if (!session?.user) {
+      alert("You must be logged in to create a character");
+      return;
+    }
     createCharacter(data);
     form.reset();
     router.refresh();
