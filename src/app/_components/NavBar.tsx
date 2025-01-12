@@ -16,16 +16,26 @@ export async function TopNav() {
             Home
           </Link>
         </li>
-        <li>
-          <Link className="hover:text-pink-500" href={"/library"}>
-            Spellbook manager
+        {session ? (
+          <>
+            <li>
+              <Link className="hover:text-pink-500" href={"/library"}>
+                Spellbook manager
+              </Link>
+            </li>
+            <li>
+              <Link className="hover:text-pink-500" href={"/homebrew"}>
+                Create a spell
+              </Link>
+            </li>
+          </>
+        ) : (
+          <Link href={"/api/auth/signin"}>
+            <div className="text-zinc-600 hover:text-pink-500">
+              Please sign in to use all features
+            </div>
           </Link>
-        </li>
-        <li>
-          <Link className="hover:text-pink-500" href={"/homebrew"}>
-            Create a spell
-          </Link>
-        </li>
+        )}
       </ul>
       <div className="justify-self-end py-2 pr-4 hover:cursor-pointer">
         {session ? (
