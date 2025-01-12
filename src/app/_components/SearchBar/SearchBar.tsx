@@ -11,16 +11,33 @@ import {
 } from "~/types";
 import { BorderedSearchBarBtn } from "./SearchBarBtn";
 import { LevelFilterButton, SchoolFilterButton } from "./FilterButton";
-import { parseAsJson, useQueryState } from "nuqs";
+import {
+  parseAsBoolean,
+  parseAsInteger,
+  parseAsJson,
+  useQueryState,
+} from "nuqs";
 import { Button } from "~/components/ui/button";
 import { useRef } from "react";
 import SearchModal from "./SearchModal";
 import { SpecializationResult } from "./SearchResult";
 import useModal from "../hooks/useModal";
+import { Switch } from "~/components/ui/switch";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 
 export function SearchBar({ openSearch }: { openSearch: () => void }) {
   const searchModalRef = useRef<HTMLInputElement>(null);
   const [isSearchOpen, setSearchOpen] = useModal({ modalRef: searchModalRef });
+  const [showLearnedOnly, setShowLearnedOnly] = useQueryState(
+    "learnedOnly",
+    parseAsBoolean,
+  );
+  const [character] = useQueryState("character", parseAsInteger);
   const [filters, setFilters] = useQueryState(
     "filters",
     // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -102,6 +119,15 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
           </LevelFilterButton>
         ))}
       </ul>
+      {character && (
+        <div className="flex items-center gap-x-2">
+          <h4 className="text-sm">Toggle between learned only/all</h4>
+          <Switch
+            checked={showLearnedOnly ?? false}
+            onCheckedChange={setShowLearnedOnly}
+          />
+        </div>
+      )}
       <Button
         onClick={() =>
           setFilters({

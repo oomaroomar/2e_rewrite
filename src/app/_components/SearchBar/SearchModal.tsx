@@ -2,6 +2,7 @@ import { Magnifier } from "~/svgs";
 import { type FormEvent, type RefObject, useState, useTransition } from "react";
 import Fuse, { type IFuseOptions } from "fuse.js";
 import { useEscapeKey } from "~/hooks/useEscapeKey";
+import { ScrollArea } from "~/components/ui/scroll-area";
 
 interface SearchModalProps<T extends { id: number | string }> {
   modalRef: RefObject<HTMLDivElement>;
@@ -51,8 +52,6 @@ export default function SearchModal<T extends { id: number | string }>({
     },
   );
 
-  console.log(searchables);
-
   return (
     <div className="p-12vh absolute left-0 top-28 z-40 mx-auto hidden max-h-96 w-full flex-col lg:flex">
       <div
@@ -85,7 +84,7 @@ export default function SearchModal<T extends { id: number | string }>({
           <button>Cancel</button>
         </header>
         <div className="flex flex-auto overflow-auto px-2">
-          <div className="longlist w-full pb-6">
+          <ScrollArea className="w-full pb-6">
             {fuseOptions?.minMatchCharLength === 0 && searchPattern.length === 0
               ? searchables.map((item) => (
                   <SearchItem
@@ -106,7 +105,7 @@ export default function SearchModal<T extends { id: number | string }>({
                     />
                   );
                 })}
-          </div>
+          </ScrollArea>
         </div>
       </div>
     </div>

@@ -1,11 +1,16 @@
 import { type Spell } from "~/types";
 
-interface SpellCardProps {
+interface SmallSpellCardProps {
   spell: Spell;
   onClick: () => void;
 }
 
-export function SmallSpellCard({ spell, onClick }: SpellCardProps) {
+interface BigSpellCardProps {
+  spell: Spell;
+  onClick?: (spell: Spell) => void;
+}
+
+export function SmallSpellCard({ spell, onClick }: SmallSpellCardProps) {
   return (
     <div onClick={onClick} className="container w-72 p-3">
       <div
@@ -47,7 +52,7 @@ export function SmallSpellCard({ spell, onClick }: SpellCardProps) {
   );
 }
 
-export function BigSpellCard({ spell }: Omit<SpellCardProps, "onClick">) {
+export function BigSpellCard({ spell, onClick }: BigSpellCardProps) {
   return (
     <div className="p-4">
       <div
@@ -63,7 +68,9 @@ export function BigSpellCard({ spell }: Omit<SpellCardProps, "onClick">) {
             <b>{spell.name}</b>
           </div>
           <div></div>
-          <div></div>
+          <div className="hover:cursor-pointer">
+            {onClick ? <b onClick={() => onClick(spell)}>learn spell</b> : null}
+          </div>
           <div className="px-4 py-1">
             <b>{spell.castingClass === "cleric" ? "C" : "W"}</b>
           </div>

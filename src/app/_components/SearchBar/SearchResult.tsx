@@ -4,7 +4,7 @@ import { capitalize } from "~/utils";
 // S might contain extra fields like createdAt, updatedAt, etc.
 interface SpellCardProps<S extends Spell> {
   spell: S;
-  appendFullDescSpell: (s: S) => void;
+  onClick: (s: S) => void;
 }
 
 interface SpecializationResultProps {
@@ -32,13 +32,10 @@ export function SpecializationResult({
 
 export function SpellResult<S extends Spell>({
   spell,
-  appendFullDescSpell,
+  onClick,
 }: SpellCardProps<S>) {
   return (
-    <div
-      className="container w-full p-3"
-      onClick={() => appendFullDescSpell(spell)}
-    >
+    <div className="container w-full p-3" onClick={() => onClick(spell)}>
       <div
         className={`grid grid-cols-2 gap-y-2 rounded-xl bg-white text-black hover:shadow-md hover:shadow-${spell.schools[0]}`}
       >
