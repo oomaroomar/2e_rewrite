@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import Image from "next/image";
 import { auth, signOut } from "~/server/auth";
+import { redirect } from "next/navigation";
 
 export async function TopNav() {
   const session = await auth();
@@ -43,6 +44,7 @@ export async function TopNav() {
             action={async () => {
               "use server";
               await signOut();
+              redirect("/");
             }}
             className="flex items-center"
           >

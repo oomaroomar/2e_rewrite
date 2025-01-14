@@ -22,3 +22,19 @@ export function getComponentsArray(spell: Spell) {
 export function isSubset<T>(arr1: T[], arr2: T[]) {
   return arr1.every((elem) => arr2.includes(elem));
 }
+
+export function isInteractiveElement(element: HTMLElement) {
+  const interactiveElements = [
+    "button",
+    "input",
+    "textarea",
+    "select",
+    "option",
+  ];
+
+  if (interactiveElements.includes(element.tagName.toLowerCase())) {
+    return true;
+  }
+
+  return false;
+}
