@@ -7,8 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import CreateCharacterForm from "./_components/CreateCharacterForm";
 import CharacterList from "./_components/CharacterList";
 import SpellPageWrapper from "./_components/SpellPageWrapper";
-import PreparedLevelSpellTable from "./_components/PreparedSpellSwappy";
 import { Suspense } from "react";
+import PreparedSpellDnd from "./_components/PreparedSpellDnd";
 
 export default async function LibraryPage() {
   return (
@@ -41,11 +41,8 @@ export default async function LibraryPage() {
               <ResizablePanel className="p-4" defaultSize={70}>
                 <div>
                   <h1 className="text-lg font-bold">Prepared Spells </h1>
-                  <h3 className="text-base font-normal text-red-600">
-                    (Reordering spells currently broken)
-                  </h3>
                 </div>
-                <PreparedLevelSpellTable />
+                <PreparedSpellDnd />
               </ResizablePanel>
             </ResizablePanelGroup>
           </ResizablePanel>
