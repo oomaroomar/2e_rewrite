@@ -30,6 +30,10 @@ export default {
     "hover:shadow-invocation",
     "hover:shadow-illusion",
     "hover:shadow-necromancy",
+    "shadow-common",
+    "shadow-rare",
+    "shadow-epic",
+    "shadow-legendary",
   ],
   theme: {
     extend: {
@@ -52,6 +56,10 @@ export default {
         necromancy: "#666666",
         wizard: "#6A3190",
         cleric: "#f0e637",
+        common: "#4fa346",
+        rare: "#323be5",
+        epic: "#6405a8",
+        legendary: "#e58a12",
       },
     },
   },

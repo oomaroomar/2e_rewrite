@@ -24,7 +24,7 @@ import useModal from "~/app/_components/hooks/useModal";
 import SearchModal from "~/app/_components/SearchBar/SearchModal";
 import { SpellResult } from "~/app/_components/SearchBar/SearchResult";
 import { api } from "~/trpc/react";
-import { getComponentsArray, isInteractiveElement } from "~/utils";
+import { capitalize, getComponentsArray, isInteractiveElement } from "~/utils";
 import { DescriptionListContext } from "~/app/_components/contexts/FullDescSpells";
 
 type SpellWithDndId = Spell & { dndId: number };
@@ -49,10 +49,67 @@ class MyPointerSensor extends PointerSensor {
 }
 
 export default function PreparedSpellDnd() {
-  return <Column />;
+  return (
+    <div className="flex flex-wrap gap-6">
+      <Column level="first" />
+      <Column level="second" />
+      <Column level="third" />
+      <Column level="fourth" />
+      <Column level="fifth" />
+      <Column level="sixth" />
+      <Column level="seventh" />
+      <Column level="eighth" />
+      <Column level="ninth" />
+    </div>
+  );
 }
 
-function Column() {
+type ColumnProps = {
+  level:
+    | "first"
+    | "second"
+    | "third"
+    | "fourth"
+    | "fifth"
+    | "sixth"
+    | "seventh"
+    | "eighth"
+    | "ninth";
+};
+
+function getLevelColor(level: ColumnProps["level"]) {
+  switch (level) {
+    case "first":
+      return "common";
+    case "second":
+      return "common";
+    case "third":
+      return "rare";
+    case "fourth":
+      return "rare";
+    case "fifth":
+      return "rare";
+    case "sixth":
+      return "epic";
+    case "seventh":
+      return "epic";
+    case "eighth":
+      return "epic";
+    case "ninth":
+      return "legendary";
+  }
+}
+
+function Column({ level }: ColumnProps) {
+  return (
+    <div className={`rounded-lg p-2 shadow-md shadow-${getLevelColor(level)}`}>
+      <h3 className="text-lg font-medium">{capitalize(level)} level spells</h3>
+      <PreparedSpellTable />
+    </div>
+  );
+}
+
+function PreparedSpellTable() {
   const [spells, setSpells] = useState<Array<SpellWithDndId>>([]);
   const searchModalRef = useRef<HTMLInputElement>(null);
   const [isSearchOpen, setSearchOpen] = useModal({ modalRef: searchModalRef });
@@ -91,7 +148,14 @@ function Column() {
       sensors={sensors}
       collisionDetection={closestCorners}
     >
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-1">
+        <div
+          className={`grid max-w-96 grid-cols-4 gap-4 rounded-lg p-2 text-sm`}
+        >
+          <div>Name</div>
+          <div>Cast time</div>
+          <div>Components</div>
+        </div>
         <SortableContext
           items={spells.map((spell) => spell.dndId)}
           strategy={verticalListSortingStrategy}
@@ -147,11 +211,11 @@ function PreparedSpell({
       {...attributes}
       {...listeners}
       style={style}
-      className={`grid grid-cols-4 gap-4 p-2 bg-${spell.schools[0]} rounded-lg`}
+      className={`grid grid-cols-4 gap-4 p-2 bg-${spell.schools[0]} max-w-96 rounded-lg`}
     >
-      <div className="">{spell.name}</div>
-      <div className="">{spell.castingTime}</div>
-      <div>
+      <div className="align-middle font-semibold">{spell.name}</div>
+      <div className="align-middle">{spell.castingTime}</div>
+      <div className="align-middle">
         {getComponentsArray(spell)
           .map((c) => c.charAt(0))
           .join(", ")}
@@ -161,7 +225,7 @@ function PreparedSpell({
           console.log(spell);
           handleCast(spell);
         }}
-        className="bg-zinc-900 hover:bg-zinc-600"
+        className="bg-zinc-900 px-1 py-0 hover:bg-zinc-600"
       >
         Cast
       </Button>

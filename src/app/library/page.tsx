@@ -38,7 +38,11 @@ export default async function LibraryPage() {
                 </Tabs>
               </ResizablePanel>
               <ResizableHandle className="" />
-              <ResizablePanel className="p-4" defaultSize={70}>
+              <ResizablePanel
+                className="p-4"
+                style={{ overflow: "auto" }}
+                defaultSize={70}
+              >
                 <div>
                   <h1 className="text-lg font-bold">Prepared Spells </h1>
                 </div>

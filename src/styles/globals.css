@@ -1,8 +1,180 @@
+/* Tailwind stuff is at the bottom so I can overwrite inline */
+
+.animated-border {
+  --border-angle: 0deg;
+  border-radius: 12px;
+  padding: 0.2rem;
+  /* box-shadow: 0px 2px 4px hsl(0 0% 0% / 25%); */
+  animation: breathing 2s infinite cubic-bezier(0.2, 0.4, 0.4, 0.8);
+  border: 0.2rem solid transparent;
+  position: relative;
+
+  &.a {
+    background:
+      linear-gradient(white, white) padding-box,
+      conic-gradient(
+          from var(--border-angle),
+          oklch(100% 100% 0deg),
+          oklch(100% 100% 45deg),
+          oklch(100% 100% 90deg),
+          oklch(100% 100% 135deg),
+          oklch(100% 100% 180deg),
+          oklch(100% 100% 225deg),
+          oklch(100% 100% 270deg),
+          oklch(100% 100% 315deg),
+          oklch(100% 100% 360deg)
+        )
+        border-box;
+  }
+
+  &.b {
+    background:
+      linear-gradient(white, white) padding-box,
+      conic-gradient(from var(--border-angle), white 50%, pink) border-box;
+  }
+
+  &.first {
+    background:
+      linear-gradient(white, white) padding-box,
+      conic-gradient(from var(--border-angle), white 50%, var(--first))
+        border-box;
+
+    animation: border-angle-rotate 10s infinite linear;
+  }
+  &.second {
+    background:
+      linear-gradient(white, white) padding-box,
+      conic-gradient(from var(--border-angle), white 50%, var(--second))
+        border-box;
+
+    animation: border-angle-rotate 8s infinite linear;
+  }
+  &.third {
+    background:
+      linear-gradient(white, white) padding-box,
+      conic-gradient(from var(--border-angle), white 50%, var(--third))
+        border-box;
+
+    animation: border-angle-rotate 10s infinite cubic-bezier(0.2, 0.4, 0.8, 0.4);
+  }
+  &.fourth {
+    background:
+      linear-gradient(white, white) padding-box,
+      conic-gradient(from var(--border-angle), white 50%, var(--fourth))
+        border-box;
+
+    animation: border-angle-rotate 10s infinite cubic-bezier(0.2, 0.4, 0.4, 0.8);
+  }
+  &.fifth {
+    background:
+      linear-gradient(white, white) padding-box,
+      conic-gradient(from var(--border-angle), white 50%, var(--fifth))
+        border-box;
+
+    animation: border-angle-rotate 10s infinite cubic-bezier(0.2, 0.4, 0.4, 0.8);
+  }
+  &.sixth {
+    background:
+      linear-gradient(white, white) padding-box,
+      conic-gradient(from var(--border-angle), white 50%, var(--sixth))
+        border-box;
+    animation: border-angle-rotate 10s infinite cubic-bezier(0.2, 0.4, 0.4, 0.8);
+  }
+  &.seventh {
+    background:
+      linear-gradient(white, white) padding-box,
+      conic-gradient(from var(--border-angle), white 50%, var(--seventh))
+        border-box;
+
+    animation: border-angle-rotate 10s infinite cubic-bezier(0.2, 0.4, 0.4, 0.8);
+  }
+  &.eighth {
+    background:
+      linear-gradient(white, white) padding-box,
+      conic-gradient(from var(--border-angle), white 50%, var(--eighth))
+        border-box;
+
+    animation: border-angle-rotate 10s infinite cubic-bezier(0.2, 0.4, 0.4, 0.8);
+  }
+  &.ninth {
+    background:
+      linear-gradient(white, white) padding-box,
+      conic-gradient(from var(--border-angle), white 50%, var(--ninth))
+        border-box;
+
+    animation: border-angle-rotate 10s infinite cubic-bezier(0.2, 0.4, 0.4, 0.8);
+  }
+
+  &.c {
+    border-radius: 100%;
+    background: radial-gradient(circle, var(--bg) 60%, transparent 60%);
+
+    &:before,
+    &:after {
+      content: "";
+      display: block;
+      position: absolute;
+      inset: 4px;
+      border-radius: 100%;
+      animation: border-angle-rotate 4s infinite linear;
+      z-index: -1;
+    }
+
+    &:before {
+      inset: 0;
+      background: repeating-conic-gradient(
+          from var(--border-angle),
+          var(--bg),
+          var(--bg) 30deg,
+          oklch(100% 50% 190deg) calc(360deg / 6)
+        )
+        border-box;
+    }
+
+    &:after {
+      background: repeating-conic-gradient(
+          from calc(var(--border-angle) * -1),
+          oklch(100% 40% 50deg),
+          black 60deg
+        )
+        border-box;
+    }
+  }
+}
+
+@keyframes border-angle-rotate {
+  from {
+    --border-angle: 0deg;
+  }
+  to {
+    --border-angle: 360deg;
+  }
+}
+
+/** boilerplate **/
+body {
+  --bg: hsl(190deg 20% 10%);
+  --first: rgb(150, 150, 150);
+  --second: rgb(61, 210, 11);
+  --third: rgb(0, 184, 184);
+  --fourth: rgb(47, 120, 255);
+  --fifth: rgb(171, 70, 255);
+  --sixth: rgb(255, 0, 255);
+  --seventh: rgb(255, 150, 0);
+  --eighth: rgb(255, 105, 180);
+  --ninth: rgb(0, 255, 255);
+}
+
+@property --border-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 @layer base {
   :root {
-    --radius: 0.5rem
+    --radius: 0.5rem;
   }
 }
