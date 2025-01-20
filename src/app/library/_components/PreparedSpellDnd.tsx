@@ -1,7 +1,13 @@
 "use client";
 import { CSS } from "@dnd-kit/utilities";
 
-import { useContext, useRef, useState, type PointerEvent } from "react";
+import {
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  type PointerEvent,
+} from "react";
 import { type Spell } from "~/types";
 import {
   closestCorners,
@@ -26,6 +32,9 @@ import { SpellResult } from "~/app/_components/SearchBar/SearchResult";
 import { api } from "~/trpc/react";
 import { capitalize, getComponentsArray, isInteractiveElement } from "~/utils";
 import { DescriptionListContext } from "~/app/_components/contexts/FullDescSpells";
+import { parseAsInteger } from "nuqs";
+import { useQueryState } from "nuqs";
+import { useLocalStorage } from "~/app/_components/hooks/useLocalStorage";
 
 type SpellWithDndId = Spell & { dndId: number };
 
@@ -104,24 +113,49 @@ function Column({ level }: ColumnProps) {
   return (
     <div className={`rounded-lg p-2 shadow-md shadow-${getLevelColor(level)}`}>
       <h3 className="text-lg font-medium">{capitalize(level)} level spells</h3>
-      <PreparedSpellTable />
+      <PreparedSpellTable level={level} />
     </div>
   );
 }
 
-function PreparedSpellTable() {
-  const [spells, setSpells] = useState<Array<SpellWithDndId>>([]);
+function PreparedSpellTable({ level }: ColumnProps) {
+  const [character, setCharacter] = useQueryState("character", parseAsInteger);
+  const [spells, setSpells] = useLocalStorage<Array<SpellWithDndId>>(
+    `preparedSpells-${character}-${level}`,
+    [],
+  );
   const searchModalRef = useRef<HTMLInputElement>(null);
   const [isSearchOpen, setSearchOpen] = useModal({ modalRef: searchModalRef });
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useLocalStorage("count", 0);
   const handleSelect = (spell: Spell) => {
-    setSpells([...spells, { ...spell, dndId: count }]);
-    setCount(count + 1);
+    setSpells((prev) => {
+      const newVal = [...prev, { ...spell, dndId: count }];
+      setCount((prev) => {
+        // If someone prepares 9 quadrillion spells, they're an absolute legend
+        const c = prev === Number.MAX_SAFE_INTEGER ? 0 : prev + 1;
+        return c;
+      });
+      return newVal;
+    });
   };
+
+  useEffect(() => {
+    setSpells(() => {
+      const preparedSpells = window.localStorage.getItem(
+        `preparedSpells-${character}-${level}`,
+      );
+      if (preparedSpells) {
+        return JSON.parse(preparedSpells) as SpellWithDndId[];
+      }
+      return [];
+    });
+    // No memoization required! Doesn't rerender a million times thanks to the react compiler :)
+  }, [character, level, setSpells]);
+
   const { appendSpell } = useContext(DescriptionListContext)!;
   function handleCast(spell: SpellWithDndId) {
     appendSpell(spell);
-    setSpells(spells.filter((sp) => sp.dndId !== spell.dndId));
+    setSpells((prev) => prev.filter((sp) => sp.dndId !== spell.dndId));
   }
   const [allSpells] = api.spell.getSpells.useSuspenseQuery();
   const sensors = useSensors(
@@ -203,7 +237,6 @@ function PreparedSpell({
     transform: CSS.Transform.toString(transform),
     transition,
   };
-  console.log(spell.dndId, spell.name, spell.schools[0], transition, transform);
 
   return (
     <div
@@ -222,7 +255,6 @@ function PreparedSpell({
       </div>
       <Button
         onClick={() => {
-          console.log(spell);
           handleCast(spell);
         }}
         className="bg-zinc-900 px-1 py-0 hover:bg-zinc-600"

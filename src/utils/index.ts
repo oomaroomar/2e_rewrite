@@ -13,8 +13,8 @@ export function capitalize(str: string) {
 
 export function getComponentsArray(spell: Spell) {
   const components = [];
-  if (spell.verbal) components.push("verbal");
   if (spell.somatic) components.push("somatic");
+  if (spell.verbal) components.push("verbal");
   if (spell.material) components.push("material");
   return components;
 }

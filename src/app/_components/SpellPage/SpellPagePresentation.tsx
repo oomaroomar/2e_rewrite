@@ -20,6 +20,7 @@ interface SpellPagePresentationProps {
   appendFullDescSpell: (spell: Spell) => void;
   setSearchOpen: (open: boolean) => void;
   learnSpell?: (spell: Spell) => void;
+  writeSpell?: (spell: Spell) => void;
 }
 
 export default function SpellPagePresentation({
@@ -31,6 +32,7 @@ export default function SpellPagePresentation({
   appendFullDescSpell,
   setSearchOpen,
   learnSpell,
+  writeSpell,
 }: SpellPagePresentationProps) {
   return (
     <div className="grid h-full w-full grid-rows-[auto,1fr]">
@@ -44,7 +46,12 @@ export default function SpellPagePresentation({
           <div className="flex flex-col">
             {fullDescSpells.length > 0 ? (
               fullDescSpells.map((spell, i) => (
-                <BigSpellCard onClick={learnSpell} key={i} spell={spell} />
+                <BigSpellCard
+                  writeSpell={writeSpell}
+                  learnSpell={learnSpell}
+                  key={i}
+                  spell={spell}
+                />
               ))
             ) : (
               <Placeholder text="Click a spell to view its entire details." />

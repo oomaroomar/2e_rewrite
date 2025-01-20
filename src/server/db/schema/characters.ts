@@ -109,21 +109,21 @@ export const books = createTable(
     userId: varchar("userId", { length: 255 })
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
-    chracterId: integer("characterId")
+    characterId: integer("characterId")
       .notNull()
       .references(() => characters.id, { onDelete: "cascade" }),
     maxPages: integer("maxPages").$default(() => 100),
-    name: varchar("name", { length: 255 }),
+    name: varchar("name", { length: 255 }).notNull(),
   },
   (book) => ({
     bookUserIndex: index("book_user_index").on(book.userId),
-    bookCharacterIndex: index("book_character_index").on(book.chracterId),
+    bookCharacterIndex: index("book_character_index").on(book.characterId),
   }),
 );
 
 export const bookRelations = relations(books, ({ one, many }) => ({
   owner: one(characters, {
-    fields: [books.chracterId],
+    fields: [books.characterId],
     references: [characters.id],
   }),
   spellCopies: many(spellCopy),

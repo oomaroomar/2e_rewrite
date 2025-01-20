@@ -7,7 +7,8 @@ interface SmallSpellCardProps {
 
 interface BigSpellCardProps {
   spell: Spell;
-  onClick?: (spell: Spell) => void;
+  learnSpell?: (spell: Spell) => void;
+  writeSpell?: (spell: Spell) => void;
 }
 
 export function SmallSpellCard({ spell, onClick }: SmallSpellCardProps) {
@@ -52,7 +53,11 @@ export function SmallSpellCard({ spell, onClick }: SmallSpellCardProps) {
   );
 }
 
-export function BigSpellCard({ spell, onClick }: BigSpellCardProps) {
+export function BigSpellCard({
+  spell,
+  learnSpell,
+  writeSpell,
+}: BigSpellCardProps) {
   return (
     <div className="p-4">
       <div
@@ -67,9 +72,15 @@ export function BigSpellCard({ spell, onClick }: BigSpellCardProps) {
           <div className="col-span-7 px-4 py-1">
             <b>{spell.name}</b>
           </div>
-          <div></div>
           <div className="hover:cursor-pointer">
-            {onClick ? <b onClick={() => onClick(spell)}>learn spell</b> : null}
+            {writeSpell ? (
+              <b onClick={() => writeSpell(spell)}>write spell</b>
+            ) : null}
+          </div>
+          <div className="hover:cursor-pointer">
+            {learnSpell ? (
+              <b onClick={() => learnSpell(spell)}>learn spell</b>
+            ) : null}
           </div>
           <div className="px-4 py-1">
             <b>{spell.castingClass === "cleric" ? "C" : "W"}</b>
