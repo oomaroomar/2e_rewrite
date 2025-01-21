@@ -13,39 +13,32 @@ interface BigSpellCardProps {
 
 export function SmallSpellCard({ spell, onClick }: SmallSpellCardProps) {
   return (
-    <div onClick={onClick} className="container w-72 p-3">
-      <div
-        className={`grid grid-cols-2 gap-y-2 rounded-lg border border-t-8 border-${spell.schools[0]} bg-white hover:cursor-pointer hover:shadow-md hover:shadow-${spell.schools[0]}`}
-      >
-        <div className={`col-span-2 grid grid-cols-10 rounded-t-xl`}>
-          <div className="px-2 py-1">
-            <span className="font-semibold">
-              {spell.level.toString() + ")"}
-            </span>
-          </div>
-          <div className="col-span-9 px-2 py-1">
-            <span className="font-semibold">{spell.name}</span>
-          </div>
-        </div>
-        <div className="col-span-2 px-2">
-          {" "}
-          <span className="font-semibold">
-            {spell.somatic ? "S " : ""}
-            {spell.verbal ? "V " : ""}
-            {spell.material ? "M: " : ""}
-          </span>
-          <span>{spell.materials}</span>
-        </div>
-        <div className="p-2 pt-0">
-          {" "}
-          <span className="font-semibold">Damage: </span>
-          <span>{spell.damage}</span>
-        </div>
-        <div className="p-2 pt-0">
-          {" "}
-          <b>Duration: </b>
-          {spell.duration}{" "}
-        </div>
+    <div
+      onClick={onClick}
+      className={`container flex w-72 flex-col gap-2 rounded-md border border-t-8 p-2 border-${spell.schools[0]} bg-white hover:cursor-pointer hover:shadow-md hover:shadow-${spell.schools[0]}`}
+    >
+      <div className="flex justify-between px-2 py-1">
+        <span className="font-semibold">{spell.name}</span>
+        <span className="font-semibold">
+          {"(" + spell.level.toString() + ")"}
+        </span>
+      </div>
+      <div className="col-span-2 px-2">
+        {" "}
+        <span className="font-semibold">
+          {spell.somatic ? "S " : ""}
+          {spell.verbal ? "V " : ""}
+          {spell.material ? "M: " : ""}
+        </span>
+        <span>{spell.materials}</span>
+      </div>
+      <div className="p-2 pt-0">
+        <span className="font-semibold">Damage: </span>
+        <span>{spell.damage}</span>
+      </div>
+      <div className="p-2 pt-0">
+        <span className="font-semibold">Duration: </span>
+        <span>{spell.duration}</span>
       </div>
     </div>
   );

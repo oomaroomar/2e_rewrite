@@ -43,7 +43,7 @@ export default function SpellPagePresentation({
           className="hidden overflow-auto pb-8 md:flex"
           defaultSize={50}
         >
-          <div className="flex flex-col">
+          <div className="flex flex-col p-4">
             {fullDescSpells.length > 0 ? (
               fullDescSpells.map((spell, i) => (
                 <BigSpellCard
@@ -64,7 +64,7 @@ export default function SpellPagePresentation({
           className="overflow-auto pb-8"
           defaultSize={50}
         >
-          <div className="flex flex-wrap">
+          <div className="flex flex-wrap gap-4 p-4">
             {spells.map((spell, i) => (
               <SmallSpellCard
                 onClick={() => appendFullDescSpell(spell)}
