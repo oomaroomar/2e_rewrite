@@ -23,6 +23,33 @@ export function isSubset<T>(arr1: T[], arr2: T[]) {
   return arr1.every((elem) => arr2.includes(elem));
 }
 
+export function getRandomCharacterCreationPhrase() {
+  const phrases = [
+    "has been born!",
+    "has teleported in!",
+    "'s invisiblity was dispelled!",
+  ];
+  return phrases[Math.floor(Math.random() * phrases.length)];
+}
+
+export function getRandomBookCreationPhrase(bookName: string) {
+  const phrases = [
+    `${bookName} has been created!`,
+    `The pages of ${bookName} have been bound!`,
+    `${bookName}'s cover has been cured!`,
+  ];
+  return phrases[Math.floor(Math.random() * phrases.length)];
+}
+
+export function getRandomSpellCreationPhrase(spellName: string) {
+  const phrases = [
+    `${spellName} has been created! Hopefully you can afford its components...`,
+    `The research of ${spellName} was a success!`,
+    `Huzzah, a new spell! ${spellName} has been created!`,
+  ];
+  return phrases[Math.floor(Math.random() * phrases.length)];
+}
+
 export function isInteractiveElement(element: HTMLElement) {
   const interactiveElements = [
     "button",

@@ -8,13 +8,15 @@ import {
   type SpellComponent,
   spellLevels,
   specFilters,
+  type BrowseMode,
+  browseModes,
 } from "~/types";
 import { BorderedSearchBarBtn } from "./SearchBarBtn";
 import { LevelFilterButton, SchoolFilterButton } from "./FilterButton";
 import {
-  parseAsBoolean,
   parseAsInteger,
   parseAsJson,
+  parseAsNumberLiteral,
   useQueryState,
 } from "nuqs";
 import { Button } from "~/components/ui/button";
@@ -22,16 +24,22 @@ import { useRef } from "react";
 import SearchModal from "./SearchModal";
 import { SpecializationResult } from "./SearchResult";
 import useModal from "../hooks/useModal";
-import { Switch } from "~/components/ui/switch";
+import { Book, Brain, Eye, Search } from "lucide-react";
+import { TooltipContent } from "~/components/ui/tooltip";
+import { TooltipTrigger } from "~/components/ui/tooltip";
+import { Tooltip } from "~/components/ui/tooltip";
+import { TooltipProvider } from "~/components/ui/tooltip";
+import { Toggle } from "~/components/ui/toggle";
 
 export function SearchBar({ openSearch }: { openSearch: () => void }) {
   const searchModalRef = useRef<HTMLInputElement>(null);
   const [isSearchOpen, setSearchOpen] = useModal({ modalRef: searchModalRef });
-  const [showLearnedOnly, setShowLearnedOnly] = useQueryState(
-    "learnedOnly",
-    parseAsBoolean,
+  const [browseMode, setBrowseMode] = useQueryState<BrowseMode>(
+    "browseMode",
+    parseAsNumberLiteral(Object.values(browseModes)),
   );
-  const [character] = useQueryState("character", parseAsInteger);
+  const [characterId] = useQueryState("character", parseAsInteger);
+  const [bookId] = useQueryState("book", parseAsInteger);
   const [filters, setFilters] = useQueryState(
     "filters",
     // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -80,18 +88,19 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
   async function setDamaging(damaging: DmgOption) {
     await setFilters((old) => ({ ...old, damaging }));
   }
+  console.log(browseMode === browseModes.book);
 
   return (
     <nav className="hidden w-full items-center gap-x-4 border-b border-black px-2 py-2 text-xl md:flex">
-      <BorderedSearchBarBtn
-        text="Quick search..."
-        text2="Ctrl + K"
-        onClick={openSearch}
-      />
-      <BorderedSearchBarBtn
-        text="Specialization"
-        onClick={() => setSearchOpen(true)}
-      />
+      <Button onClick={openSearch}>
+        <Search />
+        <span>Search</span>
+        <span>Ctrl + K</span>
+      </Button>
+      <Button onClick={() => setSearchOpen(true)}>
+        <span>Specialization</span>
+      </Button>
+
       <ul className="flex gap-x-1">
         {schools.map((school) => (
           <SchoolFilterButton
@@ -113,13 +122,55 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
           </LevelFilterButton>
         ))}
       </ul>
-      {character && (
+
+      {characterId && (
         <div className="flex items-center gap-x-2">
-          <h4 className="text-sm">Toggle between learned only/all</h4>
-          <Switch
-            checked={showLearnedOnly ?? false}
-            onCheckedChange={setShowLearnedOnly}
-          />
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Toggle
+                  className="hover:cursor-pointer"
+                  onClick={() => setBrowseMode(browseModes.all)}
+                  pressed={browseMode === browseModes.all}
+                >
+                  <Eye />
+                </Toggle>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Show all spells</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Toggle
+                  className="hover:cursor-pointer"
+                  pressed={browseMode === browseModes.learned}
+                  onClick={() => setBrowseMode(browseModes.learned)}
+                >
+                  <Brain />
+                </Toggle>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Show spells learned by selected character</p>
+              </TooltipContent>
+            </Tooltip>
+            {bookId && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Toggle
+                    pressed={browseMode === browseModes.book}
+                    className="hover:cursor-pointer"
+                    onClick={() => setBrowseMode(browseModes.book)}
+                  >
+                    <Book />
+                  </Toggle>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Show spells written into selected spellbook</p>
+                </TooltipContent>
+              </Tooltip>
+            )}
+          </TooltipProvider>
         </div>
       )}
       <Button

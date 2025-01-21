@@ -10,6 +10,8 @@ import { Button } from "~/components/ui/button";
 // import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { parseAsInteger, useQueryState } from "nuqs";
+import { toast } from "~/hooks/use-toast";
+import { getRandomBookCreationPhrase } from "~/utils";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -26,8 +28,12 @@ export default function CreateBookForm() {
     defaultValues: { name: "", maxPages: 100 },
   });
   const { mutate: createBook } = api.book.createBook.useMutation({
-    onSuccess: async () => {
-      await utils.character.getMyCharacters.invalidate();
+    onSuccess: (_, v) => {
+      void utils.character.getMyCharacters.invalidate();
+      toast({
+        title: "Book created",
+        description: getRandomBookCreationPhrase(v.name),
+      });
     },
   });
 

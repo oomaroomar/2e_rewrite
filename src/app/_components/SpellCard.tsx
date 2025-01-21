@@ -15,33 +15,31 @@ export function SmallSpellCard({ spell, onClick }: SmallSpellCardProps) {
   return (
     <div onClick={onClick} className="container w-72 p-3">
       <div
-        className={`grid grid-cols-2 gap-y-2 rounded-xl border border-slate-200 bg-white text-black hover:cursor-pointer hover:shadow-md hover:shadow-${spell.schools[0]}`}
+        className={`grid grid-cols-2 gap-y-2 rounded-lg border border-t-8 border-${spell.schools[0]} bg-white hover:cursor-pointer hover:shadow-md hover:shadow-${spell.schools[0]}`}
       >
-        <div
-          className={`col-span-2 grid grid-cols-10 bg-${spell.schools[0]} rounded-t-xl`}
-        >
+        <div className={`col-span-2 grid grid-cols-10 rounded-t-xl`}>
           <div className="px-2 py-1">
-            <b>
-              {spell.level}
-              {")"}
-            </b>
+            <span className="font-semibold">
+              {spell.level.toString() + ")"}
+            </span>
           </div>
           <div className="col-span-9 px-2 py-1">
-            <b>{spell.name}</b>
+            <span className="font-semibold">{spell.name}</span>
           </div>
         </div>
         <div className="col-span-2 px-2">
           {" "}
-          <b>
+          <span className="font-semibold">
             {spell.somatic ? "S " : ""}
             {spell.verbal ? "V " : ""}
             {spell.material ? "M: " : ""}
-          </b>
-          {spell.materials}
+          </span>
+          <span>{spell.materials}</span>
         </div>
         <div className="p-2 pt-0">
           {" "}
-          <b>Damage: </b> {spell.damage}
+          <span className="font-semibold">Damage: </span>
+          <span>{spell.damage}</span>
         </div>
         <div className="p-2 pt-0">
           {" "}

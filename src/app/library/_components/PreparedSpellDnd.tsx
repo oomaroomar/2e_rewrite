@@ -244,7 +244,7 @@ function PreparedSpell({
       {...attributes}
       {...listeners}
       style={style}
-      className={`grid grid-cols-4 gap-4 p-2 bg-${spell.schools[0]} max-w-96 rounded-lg`}
+      className={`grid grid-cols-4 gap-4 border-l-[12px] p-2 border-${spell.schools[0]} max-w-96 rounded-lg`}
     >
       <div className="align-middle font-semibold">{spell.name}</div>
       <div className="align-middle">{spell.castingTime}</div>
@@ -257,7 +257,7 @@ function PreparedSpell({
         onClick={() => {
           handleCast(spell);
         }}
-        className="bg-zinc-900 px-1 py-0 hover:bg-zinc-600"
+        className="px-1 py-0"
       >
         Cast
       </Button>

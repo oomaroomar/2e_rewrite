@@ -6,6 +6,7 @@ import { TopNav } from "./_components/NavBar";
 import { TRPCReactProvider } from "~/trpc/react";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { DescriptionListProvider } from "./_components/contexts/FullDescSpells";
+import { Toaster } from "~/components/ui/toaster";
 
 export default function RootLayout({
   children,
@@ -20,6 +21,7 @@ export default function RootLayout({
                 <div className="grid h-screen grid-rows-[auto,1fr]">
                   <TopNav />
                   <main className="overflow-auto">{children}</main>
+                  <Toaster />
                 </div>
               </body>
             </DescriptionListProvider>

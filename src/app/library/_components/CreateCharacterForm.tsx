@@ -9,12 +9,15 @@ import { FormField } from "~/app/homebrew/_components/FormField";
 import { Button } from "~/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { useToast } from "~/hooks/use-toast";
+import { getRandomCharacterCreationPhrase } from "~/utils";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
 });
 
 export default function CreateCharacterForm() {
+  const { toast } = useToast();
   const router = useRouter();
   const utils = api.useUtils();
   const { data: session } = useSession();
@@ -24,8 +27,12 @@ export default function CreateCharacterForm() {
   });
   const { mutate: createCharacter } = api.character.createCharacter.useMutation(
     {
-      onSuccess: async () => {
-        await utils.character.getMyCharacters.invalidate();
+      onSuccess: (_, v) => {
+        void utils.character.getMyCharacters.invalidate();
+        toast({
+          title: "Character created",
+          description: `${v.name} ${getRandomCharacterCreationPhrase()}`,
+        });
       },
     },
   );

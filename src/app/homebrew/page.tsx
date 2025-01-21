@@ -25,7 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { capitalize } from "~/utils";
+import { capitalize, getRandomSpellCreationPhrase } from "~/utils";
 import { Button } from "~/components/ui/button";
 import {
   fireballText,
@@ -36,6 +36,7 @@ import {
 import { api } from "~/trpc/react";
 import { useSession } from "next-auth/react";
 import Placeholder from "../_components/Placeholder";
+import { toast } from "~/hooks/use-toast";
 
 export default function Homebrew() {
   const { data: session } = useSession();
@@ -61,9 +62,15 @@ export default function Homebrew() {
       description: "",
     },
   });
-
+  const utils = api.useUtils();
   const createSpell = api.spell.createSpell.useMutation({
-    onSuccess: () => window.alert("Spell created!"),
+    onSuccess: (_, v) => {
+      void utils.spell.getSpells.invalidate();
+      toast({
+        title: "Spell created",
+        description: getRandomSpellCreationPhrase(v.name),
+      });
+    },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {

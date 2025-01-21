@@ -5,9 +5,10 @@ import {
   parseAsBoolean,
   parseAsInteger,
   parseAsJson,
+  parseAsNumberLiteral,
   useQueryState,
 } from "nuqs";
-import { filterSchema, type Spell } from "~/types";
+import { browseModes, filterSchema, type Spell } from "~/types";
 import useModal from "~/app/_components/hooks/useModal";
 import { filterSpells } from "./utils";
 import SpellPagePresentation from "./SpellPagePresentation";
@@ -19,7 +20,10 @@ export default function SpellPage() {
     modalRef: searchModalRef,
     toggleKey: "k",
   });
-  const [showLearnedOnly] = useQueryState("learnedOnly", parseAsBoolean);
+  const [browseMode] = useQueryState(
+    "browseMode",
+    parseAsNumberLiteral(Object.values(browseModes)),
+  );
   const { spells: fullDescSpells, appendSpell } = useContext(
     DescriptionListContext,
   )!;
@@ -69,7 +73,18 @@ export default function SpellPage() {
     .find((c) => c.id === characterId)
     ?.learnedSpells.map((ls) => ls.spell);
 
-  const finalSpells = showLearnedOnly ? (learnedSpells ?? []) : spells;
+  const bookSpells = characters
+    .find((c) => c.id === characterId)
+    ?.books.find((b) => b.id === bookId)
+    ?.spellCopies.map((sc) => sc.spell);
+
+  let finalSpells: Spell[] = spells;
+  if (browseMode === browseModes.learned) {
+    finalSpells = learnedSpells ?? [];
+  } else if (browseMode === browseModes.book) {
+    finalSpells = bookSpells ?? [];
+  }
+
   const filteredSpells = finalSpells.filter((spell) =>
     filterSpells(spell, filters),
   );
