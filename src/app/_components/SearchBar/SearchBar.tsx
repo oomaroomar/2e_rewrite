@@ -143,7 +143,7 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Toggle
-                  className="hover:cursor-pointer"
+                  className="hover:cursor-pointer data-[state=on]:text-zinc-500"
                   pressed={browseMode === browseModes.learned}
                   onClick={() => setBrowseMode(browseModes.learned)}
                 >

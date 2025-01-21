@@ -43,7 +43,7 @@ export default function SpellPagePresentation({
           className="hidden overflow-auto pb-8 md:flex"
           defaultSize={50}
         >
-          <div className="flex flex-col p-4">
+          <div className="flex flex-col gap-4 p-4">
             {fullDescSpells.length > 0 ? (
               fullDescSpells.map((spell, i) => (
                 <BigSpellCard
