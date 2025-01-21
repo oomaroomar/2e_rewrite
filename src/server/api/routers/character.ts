@@ -27,6 +27,15 @@ export const characterRouter = createTRPCRouter({
             spell: true,
           },
         },
+        books: {
+          with: {
+            spellCopies: {
+              with: {
+                spell: true,
+              },
+            },
+          },
+        },
       },
     });
 

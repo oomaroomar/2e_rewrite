@@ -7,137 +7,121 @@ interface SmallSpellCardProps {
 
 interface BigSpellCardProps {
   spell: Spell;
-  onClick?: (spell: Spell) => void;
+  learnSpell?: (spell: Spell) => void;
+  writeSpell?: (spell: Spell) => void;
 }
 
 export function SmallSpellCard({ spell, onClick }: SmallSpellCardProps) {
   return (
-    <div onClick={onClick} className="container w-72 p-3">
-      <div
-        className={`grid grid-cols-2 gap-y-2 rounded-xl border border-slate-200 bg-white text-black hover:cursor-pointer hover:shadow-md hover:shadow-${spell.schools[0]}`}
-      >
-        <div
-          className={`col-span-2 grid grid-cols-10 bg-${spell.schools[0]} rounded-t-xl`}
-        >
-          <div className="px-2 py-1">
-            <b>
-              {spell.level}
-              {")"}
-            </b>
-          </div>
-          <div className="col-span-9 px-2 py-1">
-            <b>{spell.name}</b>
-          </div>
-        </div>
-        <div className="col-span-2 px-2">
-          {" "}
-          <b>
-            {spell.somatic ? "S " : ""}
-            {spell.verbal ? "V " : ""}
-            {spell.material ? "M: " : ""}
-          </b>
-          {spell.materials}
-        </div>
-        <div className="p-2 pt-0">
-          {" "}
-          <b>Damage: </b> {spell.damage}
-        </div>
-        <div className="p-2 pt-0">
-          {" "}
-          <b>Duration: </b>
-          {spell.duration}{" "}
-        </div>
+    <div
+      onClick={onClick}
+      className={`container flex w-72 flex-col gap-2 rounded-md border border-t-8 p-2 border-${spell.schools[0]} bg-white hover:cursor-pointer hover:shadow-md hover:shadow-${spell.schools[0]}`}
+    >
+      <div className="flex justify-between px-2 py-1">
+        <span className="text-lg font-semibold">{spell.name}</span>
+        <span className="font-semibold">
+          {"(" + spell.level.toString() + ")"}
+        </span>
+      </div>
+      <div className="col-span-2 px-2">
+        <span className="font-semibold">
+          {spell.somatic ? "S " : ""}
+          {spell.verbal ? "V " : ""}
+          {spell.material ? "M: " : ""}
+        </span>
+        <span>{spell.materials}</span>
+      </div>
+      <div className="p-2 pt-0">
+        <span className="font-semibold">Damage: </span>
+        <span>{spell.damage}</span>
+      </div>
+      <div className="p-2 pt-0">
+        <span className="font-semibold">Duration: </span>
+        <span>{spell.duration}</span>
       </div>
     </div>
   );
 }
 
-export function BigSpellCard({ spell, onClick }: BigSpellCardProps) {
+export function BigSpellCard({
+  spell,
+  learnSpell,
+  writeSpell,
+}: BigSpellCardProps) {
   return (
-    <div className="p-4">
-      <div
-        className={`grid grid-cols-2 gap-y-2 rounded-xl bg-white text-black shadow-md shadow-${spell.schools[0]}`}
-      >
-        <div
-          className={`col-span-2 grid grid-cols-11 bg-${spell.schools[0]} rounded-t-xl text-xl`}
-        >
-          <div className="px-4 py-1">
-            <b>{`${spell.level})`}</b>
-          </div>
-          <div className="col-span-7 px-4 py-1">
-            <b>{spell.name}</b>
-          </div>
-          <div></div>
+    <div
+      className={`grid grid-cols-2 gap-y-2 rounded-lg border-2 border-t-[6px] p-6 border-${spell.schools[0]} bg-white text-black shadow-${spell.schools[0]}`}
+    >
+      <div className={`col-span-2 flex justify-between`}>
+        <div className="col-span-7 text-lg font-semibold">{spell.name}</div>
+        <div className="flex gap-2">
           <div className="hover:cursor-pointer">
-            {onClick ? <b onClick={() => onClick(spell)}>learn spell</b> : null}
+            {writeSpell ? (
+              <span className="font-semibold" onClick={() => writeSpell(spell)}>
+                write spell
+              </span>
+            ) : null}
           </div>
-          <div className="px-4 py-1">
-            <b>{spell.castingClass === "cleric" ? "C" : "W"}</b>
+          <div className="hover:cursor-pointer">
+            {learnSpell ? (
+              <span className="font-semibold" onClick={() => learnSpell(spell)}>
+                learn spell
+              </span>
+            ) : null}
           </div>
         </div>
-        <div className="col-span-2 px-4">
-          {" "}
-          <b>
-            {spell.somatic ? "S " : ""} {spell.verbal ? "V " : ""}
-            {spell.material ? "M: " : ""}
-          </b>
-          {spell.materials}
+      </div>
+      <div className="col-span-2">
+        <span className="font-semibold">
+          {spell.somatic ? "S " : ""} {spell.verbal ? "V " : ""}
+          {spell.material ? "M: " : ""}
+        </span>
+        {spell.materials}
+      </div>
+      <div className="">
+        <span className="font-semibold">Damage:</span> {spell.damage}
+      </div>
+      <div className="">
+        <span className="font-semibold">Duration:</span> {spell.duration}
+      </div>
+      <div className="">
+        <span className="font-semibold">AoE:</span> {spell.aoe}
+      </div>
+      <div className="">
+        <span className="font-semibold">Range:</span> {spell.range}
+      </div>
+      <div className="">
+        <span className="font-semibold">Casting Time:</span> {spell.castingTime}
+      </div>
+      <div className="">
+        <span className="font-semibold">Save:</span> {spell.savingThrow}
+      </div>
+      {spell.castingClass === "cleric" ? (
+        <div className="">
+          <span className="font-semibold">Spheres:</span>
+          {spell.spheres?.map((sphere, i) =>
+            i === spell.spheres!.length - 1 ? (
+              <span key={sphere}>{sphere} </span>
+            ) : (
+              <span key={sphere}>{sphere}, </span>
+            ),
+          )}
         </div>
-        <div className="px-4">
-          {" "}
-          <b>Damage:</b> {spell.damage}
-        </div>
-        <div className="px-4">
-          {" "}
-          <b>Duration:</b> {spell.duration}
-        </div>
-        <div className="px-4">
-          {" "}
-          <b>AoE:</b> {spell.aoe}
-        </div>
-        <div className="px-4">
-          {" "}
-          <b>Range:</b> {spell.range}
-        </div>
-        <div className="px-4">
-          {" "}
-          <b>Casting Time:</b> {spell.castingTime}
-        </div>
-        <div className="px-4">
-          {" "}
-          <b>Save:</b> {spell.savingThrow}
-        </div>
-        {spell.castingClass === "cleric" ? (
-          <div className="px-4">
-            {" "}
-            <b>Spheres:</b>{" "}
-            {spell.spheres?.map((sphere, i) =>
-              i === spell.spheres!.length - 1 ? (
-                <span key={sphere}>{sphere} </span>
-              ) : (
-                <span key={sphere}>{sphere}, </span>
-              ),
-            )}
-          </div>
-        ) : null}
-        {/* Add scroll bar by adding max-h-80 and overflow-auto */}
-        <div className="col-span-2 p-2 px-4 pt-0 text-lg">
-          {" "}
-          <b className="text-lg">Description: </b>
-          {spell.description.map((paragraph, i) => (
-            <p className="mb-4" key={i}>
-              {paragraph}
-            </p>
-          ))}
-        </div>
-        <div className="px-4 pb-2 pt-0">
-          {" "}
-          <b>School:</b> {spell.schools[0]}
-        </div>
-        <div className="px-4 pb-2 pt-0">
-          {" "}
-          <b>Source:</b> {spell.source}
-        </div>
+      ) : null}
+      {/* Add scroll bar by adding max-h-80 and overflow-auto */}
+      <div className="col-span-2 pt-0 text-lg">
+        <span className="font-semibold">Description: </span>
+        {spell.description.map((paragraph, i) => (
+          <p className="mb-4" key={i}>
+            {paragraph}
+          </p>
+        ))}
+      </div>
+      <div className="pb-2 pt-0">
+        <span className="font-semibold">School:</span> {spell.schools[0]}
+      </div>
+      <div className="pb-2 pt-0">
+        <span className="font-semibold">Source:</span> {spell.source}
       </div>
     </div>
   );

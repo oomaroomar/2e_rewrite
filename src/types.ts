@@ -123,6 +123,14 @@ export const spellSchema = z.object({
 
 export type Spell = z.infer<typeof spellSchema> & { id: number };
 
+export const browseModes = {
+  all: 0,
+  learned: 1,
+  book: 2,
+} as const;
+
+export type BrowseMode = (typeof browseModes)[keyof typeof browseModes];
+
 export const batchSpellsSchema = spellSchema
   .omit({ source: true })
   .extend({ source: z.enum(sources) })

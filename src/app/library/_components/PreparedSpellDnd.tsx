@@ -1,7 +1,13 @@
 "use client";
 import { CSS } from "@dnd-kit/utilities";
 
-import { useContext, useRef, useState, type PointerEvent } from "react";
+import {
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  type PointerEvent,
+} from "react";
 import { type Spell } from "~/types";
 import {
   closestCorners,
@@ -24,8 +30,11 @@ import useModal from "~/app/_components/hooks/useModal";
 import SearchModal from "~/app/_components/SearchBar/SearchModal";
 import { SpellResult } from "~/app/_components/SearchBar/SearchResult";
 import { api } from "~/trpc/react";
-import { getComponentsArray, isInteractiveElement } from "~/utils";
+import { capitalize, getComponentsArray, isInteractiveElement } from "~/utils";
 import { DescriptionListContext } from "~/app/_components/contexts/FullDescSpells";
+import { parseAsInteger } from "nuqs";
+import { useQueryState } from "nuqs";
+import { useLocalStorage } from "~/app/_components/hooks/useLocalStorage";
 
 type SpellWithDndId = Spell & { dndId: number };
 
@@ -49,22 +58,104 @@ class MyPointerSensor extends PointerSensor {
 }
 
 export default function PreparedSpellDnd() {
-  return <Column />;
+  return (
+    <div className="flex flex-wrap gap-6">
+      <Column level="first" />
+      <Column level="second" />
+      <Column level="third" />
+      <Column level="fourth" />
+      <Column level="fifth" />
+      <Column level="sixth" />
+      <Column level="seventh" />
+      <Column level="eighth" />
+      <Column level="ninth" />
+    </div>
+  );
 }
 
-function Column() {
-  const [spells, setSpells] = useState<Array<SpellWithDndId>>([]);
+type ColumnProps = {
+  level:
+    | "first"
+    | "second"
+    | "third"
+    | "fourth"
+    | "fifth"
+    | "sixth"
+    | "seventh"
+    | "eighth"
+    | "ninth";
+};
+
+function getLevelColor(level: ColumnProps["level"]) {
+  switch (level) {
+    case "first":
+      return "common";
+    case "second":
+      return "common";
+    case "third":
+      return "rare";
+    case "fourth":
+      return "rare";
+    case "fifth":
+      return "rare";
+    case "sixth":
+      return "epic";
+    case "seventh":
+      return "epic";
+    case "eighth":
+      return "epic";
+    case "ninth":
+      return "legendary";
+  }
+}
+
+function Column({ level }: ColumnProps) {
+  return (
+    <div className={`rounded-lg p-2 shadow-md shadow-${getLevelColor(level)}`}>
+      <h3 className="text-lg font-medium">{capitalize(level)} level spells</h3>
+      <PreparedSpellTable level={level} />
+    </div>
+  );
+}
+
+function PreparedSpellTable({ level }: ColumnProps) {
+  const [character, setCharacter] = useQueryState("character", parseAsInteger);
+  const [spells, setSpells] = useLocalStorage<Array<SpellWithDndId>>(
+    `preparedSpells-${character}-${level}`,
+    [],
+  );
   const searchModalRef = useRef<HTMLInputElement>(null);
   const [isSearchOpen, setSearchOpen] = useModal({ modalRef: searchModalRef });
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useLocalStorage("count", 0);
   const handleSelect = (spell: Spell) => {
-    setSpells([...spells, { ...spell, dndId: count }]);
-    setCount(count + 1);
+    setSpells((prev) => {
+      const newVal = [...prev, { ...spell, dndId: count }];
+      setCount((prev) => {
+        // If someone prepares 9 quadrillion spells, they're an absolute legend
+        const c = prev === Number.MAX_SAFE_INTEGER ? 0 : prev + 1;
+        return c;
+      });
+      return newVal;
+    });
   };
+
+  useEffect(() => {
+    setSpells(() => {
+      const preparedSpells = window.localStorage.getItem(
+        `preparedSpells-${character}-${level}`,
+      );
+      if (preparedSpells) {
+        return JSON.parse(preparedSpells) as SpellWithDndId[];
+      }
+      return [];
+    });
+    // No memoization required! Doesn't rerender a million times thanks to the react compiler :)
+  }, [character, level, setSpells]);
+
   const { appendSpell } = useContext(DescriptionListContext)!;
   function handleCast(spell: SpellWithDndId) {
     appendSpell(spell);
-    setSpells(spells.filter((sp) => sp.dndId !== spell.dndId));
+    setSpells((prev) => prev.filter((sp) => sp.dndId !== spell.dndId));
   }
   const [allSpells] = api.spell.getSpells.useSuspenseQuery();
   const sensors = useSensors(
@@ -91,7 +182,14 @@ function Column() {
       sensors={sensors}
       collisionDetection={closestCorners}
     >
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-1">
+        <div
+          className={`grid max-w-96 grid-cols-4 gap-4 rounded-lg p-2 text-sm`}
+        >
+          <div>Name</div>
+          <div>Cast time</div>
+          <div>Components</div>
+        </div>
         <SortableContext
           items={spells.map((spell) => spell.dndId)}
           strategy={verticalListSortingStrategy}
@@ -139,7 +237,6 @@ function PreparedSpell({
     transform: CSS.Transform.toString(transform),
     transition,
   };
-  console.log(spell.dndId, spell.name, spell.schools[0], transition, transform);
 
   return (
     <div
@@ -147,21 +244,20 @@ function PreparedSpell({
       {...attributes}
       {...listeners}
       style={style}
-      className={`grid grid-cols-4 gap-4 p-2 bg-${spell.schools[0]} rounded-lg`}
+      className={`grid grid-cols-4 gap-4 border-l-[12px] p-2 border-${spell.schools[0]} max-w-96 rounded-lg`}
     >
-      <div className="">{spell.name}</div>
-      <div className="">{spell.castingTime}</div>
-      <div>
+      <div className="align-middle font-semibold">{spell.name}</div>
+      <div className="align-middle">{spell.castingTime}</div>
+      <div className="align-middle">
         {getComponentsArray(spell)
           .map((c) => c.charAt(0))
           .join(", ")}
       </div>
       <Button
         onClick={() => {
-          console.log(spell);
           handleCast(spell);
         }}
-        className="bg-zinc-900 hover:bg-zinc-600"
+        className="px-1 py-0"
       >
         Cast
       </Button>

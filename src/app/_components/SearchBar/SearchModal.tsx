@@ -3,6 +3,7 @@ import { type FormEvent, type RefObject, useState, useTransition } from "react";
 import Fuse, { type IFuseOptions } from "fuse.js";
 import { useEscapeKey } from "~/hooks/useEscapeKey";
 import { ScrollArea } from "~/components/ui/scroll-area";
+import { Search } from "lucide-react";
 
 interface SearchModalProps<T extends { id: number | string }> {
   modalRef: RefObject<HTMLDivElement>;
@@ -56,7 +57,7 @@ export default function SearchModal<T extends { id: number | string }>({
     <div className="p-12vh absolute left-0 top-28 z-40 mx-auto hidden max-h-96 w-full flex-col lg:flex">
       <div
         ref={modalRef}
-        className="mx-auto my-0 flex w-full max-w-3xl flex-col rounded-lg bg-white shadow-2xl shadow-black"
+        className="mx-auto my-0 flex w-full max-w-3xl flex-col rounded-lg bg-white shadow-md shadow-pink-500"
       >
         <header className="relative flex items-center px-4 py-0">
           <form
@@ -64,7 +65,7 @@ export default function SearchModal<T extends { id: number | string }>({
             className="flex flex-auto appearance-none items-center"
           >
             <label>
-              <Magnifier />
+              <Search />
             </label>
             <input
               onChange={(e) =>

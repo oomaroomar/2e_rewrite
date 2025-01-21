@@ -6,9 +6,11 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import CreateCharacterForm from "./_components/CreateCharacterForm";
 import CharacterList from "./_components/CharacterList";
-import SpellPageWrapper from "./_components/SpellPageWrapper";
+import SpellPage from "~/app/_components/SpellPage/SpellPageContainer";
 import { Suspense } from "react";
 import PreparedSpellDnd from "./_components/PreparedSpellDnd";
+import CreateBookForm from "./_components/CreateBookForm";
+import BookList from "./_components/BookList";
 
 export default async function LibraryPage() {
   return (
@@ -34,11 +36,18 @@ export default async function LibraryPage() {
                     <CreateCharacterForm />
                     <CharacterList />
                   </TabsContent>
-                  <TabsContent value="books">under construction</TabsContent>
+                  <TabsContent value="books">
+                    <CreateBookForm />
+                    <BookList />
+                  </TabsContent>
                 </Tabs>
               </ResizablePanel>
               <ResizableHandle className="" />
-              <ResizablePanel className="p-4" defaultSize={70}>
+              <ResizablePanel
+                className="p-4"
+                style={{ overflow: "auto" }}
+                defaultSize={70}
+              >
                 <div>
                   <h1 className="text-lg font-bold">Prepared Spells </h1>
                 </div>
@@ -52,7 +61,7 @@ export default async function LibraryPage() {
             className="overflow-auto pb-8"
             defaultSize={80}
           >
-            <SpellPageWrapper />
+            <SpellPage />
           </ResizablePanel>
         </ResizablePanelGroup>
       </div>
