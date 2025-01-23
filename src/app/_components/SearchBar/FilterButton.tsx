@@ -105,7 +105,7 @@ export function LevelFilterButton({
   pressed: boolean;
 }) {
   return (
-    <Toggle pressed={pressed} onClick={onClick}>
+    <Toggle pressed={pressed} onClick={onClick} className="px-1">
       {children}
     </Toggle>
   );

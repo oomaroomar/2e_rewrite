@@ -23,7 +23,7 @@ export default async function LibraryPage() {
             defaultSize={20}
           >
             <ResizablePanelGroup className="w-full" direction="vertical">
-              <ResizablePanel defaultSize={30}>
+              <ResizablePanel defaultSize={30} style={{ overflow: "auto" }}>
                 <Tabs
                   defaultValue="characters"
                   className="grid w-full grid-rows-[auto,1fr]"

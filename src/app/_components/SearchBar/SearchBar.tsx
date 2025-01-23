@@ -11,7 +11,6 @@ import {
   type BrowseMode,
   browseModes,
 } from "~/types";
-import { BorderedSearchBarBtn } from "./SearchBarBtn";
 import { LevelFilterButton, SchoolFilterButton } from "./FilterButton";
 import {
   parseAsInteger,
@@ -30,6 +29,7 @@ import { TooltipTrigger } from "~/components/ui/tooltip";
 import { Tooltip } from "~/components/ui/tooltip";
 import { TooltipProvider } from "~/components/ui/tooltip";
 import { Toggle } from "~/components/ui/toggle";
+import Dropdown from "./Dropdown";
 
 export function SearchBar({ openSearch }: { openSearch: () => void }) {
   const searchModalRef = useRef<HTMLInputElement>(null);
@@ -91,13 +91,13 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
   console.log(browseMode === browseModes.book);
 
   return (
-    <nav className="hidden w-full items-center gap-x-4 border-b border-black px-2 py-2 text-xl md:flex">
-      <Button onClick={openSearch}>
+    <nav className="hidden w-full items-center gap-x-3 border-b border-black px-2 py-2 text-xl md:flex">
+      <Button className="px-3" onClick={openSearch}>
         <Search />
         <span>Search</span>
-        <span>Ctrl + K</span>
+        {/* <span>Ctrl + K</span> */}
       </Button>
-      <Button onClick={() => setSearchOpen(true)}>
+      <Button className="px-3" onClick={() => setSearchOpen(true)}>
         <span>Specialization</span>
       </Button>
 
@@ -111,7 +111,7 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
           />
         ))}
       </ul>
-      <ul className="flex gap-x-1">
+      <Dropdown>
         {spellLevels.map((level) => (
           <LevelFilterButton
             pressed={filters.levels.includes(level)}
@@ -121,7 +121,7 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
             {level}
           </LevelFilterButton>
         ))}
-      </ul>
+      </Dropdown>
 
       {characterId && (
         <div className="flex items-center gap-x-2">
@@ -129,7 +129,7 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Toggle
-                  className="hover:cursor-pointer"
+                  className="px-1 hover:cursor-pointer"
                   onClick={() => setBrowseMode(browseModes.all)}
                   pressed={browseMode === browseModes.all}
                 >
@@ -143,7 +143,7 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Toggle
-                  className="hover:cursor-pointer data-[state=on]:text-zinc-500"
+                  className="px-1 hover:cursor-pointer data-[state=on]:text-zinc-500"
                   pressed={browseMode === browseModes.learned}
                   onClick={() => setBrowseMode(browseModes.learned)}
                 >
@@ -159,7 +159,7 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
                 <TooltipTrigger asChild>
                   <Toggle
                     pressed={browseMode === browseModes.book}
-                    className="hover:cursor-pointer"
+                    className="px-1 hover:cursor-pointer"
                     onClick={() => setBrowseMode(browseModes.book)}
                   >
                     <Book />
