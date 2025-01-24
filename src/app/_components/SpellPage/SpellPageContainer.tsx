@@ -30,8 +30,8 @@ export default function SpellPage() {
   )!;
   const [spells] = api.spell.getSpells.useSuspenseQuery();
   const [characters] = api.character.getMyCharacters.useSuspenseQuery();
-  const [characterId] = useQueryLocalStorage("character", parseAsInteger);
-  const [bookId] = useQueryLocalStorage("book", parseAsInteger);
+  const [characterId] = useQueryState("character", parseAsInteger);
+  const [bookId] = useQueryState("book", parseAsInteger);
   const [filters] = useQueryState(
     "filters",
     // eslint-disable-next-line @typescript-eslint/unbound-method

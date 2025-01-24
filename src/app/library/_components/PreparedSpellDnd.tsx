@@ -56,65 +56,42 @@ class MyPointerSensor extends PointerSensor {
 export default function PreparedSpellDnd() {
   return (
     <div className="flex flex-wrap gap-6">
-      <Column level="first" />
-      <Column level="second" />
-      <Column level="third" />
-      <Column level="fourth" />
-      <Column level="fifth" />
-      <Column level="sixth" />
-      <Column level="seventh" />
-      <Column level="eighth" />
-      <Column level="ninth" />
+      <Column level={1} />
+      <Column level={2} />
+      <Column level={3} />
+      <Column level={4} />
+      <Column level={5} />
+      <Column level={6} />
+      <Column level={7} />
+      <Column level={8} />
+      <Column level={9} />
     </div>
   );
 }
 
 type ColumnProps = {
-  level:
-    | "first"
-    | "second"
-    | "third"
-    | "fourth"
-    | "fifth"
-    | "sixth"
-    | "seventh"
-    | "eighth"
-    | "ninth";
+  level: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 };
 
 function getLevelColor(level: ColumnProps["level"]) {
   switch (level) {
-    case "first":
+    case 1:
+    case 2:
       return "common";
-    case "second":
-      return "common";
-    case "third":
+    case 3:
+    case 4:
+    case 5:
       return "rare";
-    case "fourth":
-      return "rare";
-    case "fifth":
-      return "rare";
-    case "sixth":
+    case 6:
+    case 7:
+    case 8:
       return "epic";
-    case "seventh":
-      return "epic";
-    case "eighth":
-      return "epic";
-    case "ninth":
+    case 9:
       return "legendary";
   }
 }
 
 function Column({ level }: ColumnProps) {
-  return (
-    <div className={`rounded-lg p-2 shadow-md shadow-${getLevelColor(level)}`}>
-      <h3 className="text-lg font-medium">{capitalize(level)} level spells</h3>
-      <PreparedSpellTable level={level} />
-    </div>
-  );
-}
-
-function PreparedSpellTable({ level }: ColumnProps) {
   const [characterId] = useQueryLocalStorage("character", parseAsInteger);
   const [spells, setSpells] = useLocalStorage<Array<SpellWithDndId>>(
     `preparedSpells-${characterId}-${level}`,
@@ -173,50 +150,56 @@ function PreparedSpellTable({ level }: ColumnProps) {
     });
   };
   return (
-    <DndContext
-      onDragEnd={handleDragEnd}
-      sensors={sensors}
-      collisionDetection={closestCorners}
-    >
-      <div className="flex max-w-80 flex-col gap-1">
-        <div className={`grid grid-cols-4 gap-4 rounded-lg p-2 text-sm`}>
-          <div>Name</div>
-          <div>Cast time</div>
-          <div>Components</div>
-        </div>
-        <SortableContext
-          items={spells.map((spell) => spell.dndId)}
-          strategy={verticalListSortingStrategy}
-        >
-          {spells.map((spell) => (
-            <PreparedSpell
-              key={spell.dndId}
-              spell={spell}
-              handleCast={handleCast}
-            />
-          ))}
-        </SortableContext>
-        <Button className="max-w-28" onClick={() => setSearchOpen(true)}>
-          Prepare a spell
-        </Button>
-        {isSearchOpen && (
-          <SearchModal
-            searchables={allSpells}
-            modalRef={searchModalRef}
-            setClosed={() => setSearchOpen(false)}
-            handleSelect={handleSelect}
-            fuseOptions={{
-              keys: ["name"],
-              threshold: 0.6,
-              minMatchCharLength: 0,
-            }}
-            SearchItem={({ item, onSelect }) => (
-              <SpellResult spell={item} onClick={onSelect} />
-            )}
-          />
-        )}
+    <div className={`rounded-lg p-2 shadow-md shadow-${getLevelColor(level)}`}>
+      <div className="flex justify-between px-2">
+        <h3 className="text-lg font-medium">Level {level} spells</h3>
+        <span>{spells.length}</span>
       </div>
-    </DndContext>
+      <DndContext
+        onDragEnd={handleDragEnd}
+        sensors={sensors}
+        collisionDetection={closestCorners}
+      >
+        <div className="flex max-w-80 flex-col gap-1">
+          <div className={`grid grid-cols-4 gap-4 rounded-lg p-2 text-sm`}>
+            <div>Name</div>
+            <div>Cast time</div>
+            <div>Components</div>
+          </div>
+          <SortableContext
+            items={spells.map((spell) => spell.dndId)}
+            strategy={verticalListSortingStrategy}
+          >
+            {spells.map((spell) => (
+              <PreparedSpell
+                key={spell.dndId}
+                spell={spell}
+                handleCast={handleCast}
+              />
+            ))}
+          </SortableContext>
+          <Button className="max-w-28" onClick={() => setSearchOpen(true)}>
+            Prepare a spell
+          </Button>
+          {isSearchOpen && (
+            <SearchModal
+              searchables={allSpells.filter((s) => s.level <= level)}
+              modalRef={searchModalRef}
+              setClosed={() => setSearchOpen(false)}
+              handleSelect={handleSelect}
+              fuseOptions={{
+                keys: ["name"],
+                threshold: 0.6,
+                minMatchCharLength: 0,
+              }}
+              SearchItem={({ item, onSelect }) => (
+                <SpellResult spell={item} onClick={onSelect} />
+              )}
+            />
+          )}
+        </div>
+      </DndContext>
+    </div>
   );
 }
 

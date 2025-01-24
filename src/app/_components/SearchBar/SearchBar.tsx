@@ -40,7 +40,7 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
     parseAsNumberLiteral(Object.values(browseModes)),
   );
   const [characterId] = useQueryLocalStorage("character", parseAsInteger);
-  const [bookId] = useQueryLocalStorage("book", parseAsInteger);
+  const [bookId] = useQueryState("book", parseAsInteger);
   const [filters, setFilters] = useQueryState(
     "filters",
     // eslint-disable-next-line @typescript-eslint/unbound-method

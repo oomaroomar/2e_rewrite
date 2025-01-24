@@ -1,4 +1,3 @@
-import { eq } from "drizzle-orm";
 import { TRPCError } from "node_modules/@trpc/server/dist/unstable-core-do-not-import/error/TRPCError";
 
 import { z } from "zod";

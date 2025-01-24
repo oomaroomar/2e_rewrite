@@ -16,6 +16,7 @@ export function useQueryLocalStorage<T>(
     console.log("useEffect", key);
     const item = window.localStorage.getItem(key);
     if (item && value === null) {
+      console.log("setting value with key: " + key, item);
       void setValue(JSON.parse(item) as T & {});
     }
   }, [key, setValue, value]);

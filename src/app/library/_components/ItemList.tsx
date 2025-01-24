@@ -22,7 +22,7 @@ export default function ItemList<T extends { id: number; name: string }>({
           <Fragment key={item.id}>
             <div
               onClick={() => onClick(item)}
-              className={`text-sm hover:cursor-pointer ${item.id === selectedItemId ? "text-pink-500" : ""}`}
+              className={`text-sm hover:cursor-pointer hover:text-pink-500 ${item.id === selectedItemId ? "text-pink-500" : ""}`}
             >
               {item.name}
             </div>
