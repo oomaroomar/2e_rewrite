@@ -4,8 +4,8 @@ import {
   schools,
   filterSchema,
   type School,
-  type DmgOption,
-  type SpellComponent,
+  // type DmgOption,
+  // type SpellComponent,
   spellLevels,
   specFilters,
   type BrowseMode,
@@ -135,7 +135,7 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Toggle
-                  className="px-1 hover:cursor-pointer"
+                  className={`px-1 hover:cursor-pointer ${browseMode === browseModes.all ? "bg-pink-200" : ""}`}
                   onClick={() => setBrowseMode(() => browseModes.all)}
                   pressed={browseMode === browseModes.all}
                 >
@@ -149,7 +149,7 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Toggle
-                  className="px-1 hover:cursor-pointer data-[state=on]:text-zinc-500"
+                  className={`px-1 hover:cursor-pointer ${browseMode === browseModes.learned ? "bg-pink-200" : ""}`}
                   pressed={browseMode === browseModes.learned}
                   onClick={() => setBrowseMode(() => browseModes.learned)}
                 >
@@ -165,7 +165,7 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
                 <TooltipTrigger asChild>
                   <Toggle
                     pressed={browseMode === browseModes.book}
-                    className="px-1 hover:cursor-pointer"
+                    className={`px-1 hover:cursor-pointer ${browseMode === browseModes.book ? "bg-pink-200" : ""}`}
                     onClick={() => setBrowseMode(() => browseModes.book)}
                   >
                     <BookOpen />

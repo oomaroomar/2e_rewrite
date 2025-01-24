@@ -16,7 +16,7 @@ export default function Dropdown({ children }: { children: React.ReactNode }) {
         <span>Level filters</span>
       </Button>
       {isOpen && (
-        <div className="absolute z-20 flex w-24 flex-col gap-y-2 bg-white">
+        <div className="absolute z-20 flex w-28 flex-col rounded-md border border-pink-500 bg-white animate-in fade-in-0 slide-in-from-top-1">
           {children}
         </div>
       )}

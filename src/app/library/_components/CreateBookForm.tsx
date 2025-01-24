@@ -61,13 +61,13 @@ export default function CreateBookForm() {
         <FormField
           control={form.control}
           name="name"
-          labelName="Give a name to your book"
+          labelName="Book name"
           placeholder="Spela's third Spellbook"
         />
         <FormField
           control={form.control}
           name="maxPages"
-          labelName="How many pages does your book have?"
+          labelName="Page count"
           placeholder="100"
         />
         <Button type="submit">Create</Button>

@@ -100,6 +100,9 @@ export function BigSpellCard({
           </TooltipProvider>
         </div>
       </div>
+      <div className="">
+        <span className="font-semibold">Level:</span> {spell.level}
+      </div>
       <div className="col-span-2">
         <span className="font-semibold">
           {spell.somatic ? "S " : ""} {spell.verbal ? "V " : ""}
