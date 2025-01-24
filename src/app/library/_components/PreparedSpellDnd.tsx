@@ -24,7 +24,7 @@ import useModal from "~/app/_components/hooks/useModal";
 import SearchModal from "~/app/_components/SearchBar/SearchModal";
 import { SpellResult } from "~/app/_components/SearchBar/SearchResult";
 import { api } from "~/trpc/react";
-import { capitalize, getComponentsArray, isInteractiveElement } from "~/utils";
+import { getComponentsArray, isInteractiveElement } from "~/utils";
 import { DescriptionListContext } from "~/app/_components/contexts/FullDescSpells";
 import { parseAsInteger } from "nuqs";
 import {
@@ -100,6 +100,10 @@ function Column({ level }: ColumnProps) {
   const searchModalRef = useRef<HTMLInputElement>(null);
   const [isSearchOpen, setSearchOpen] = useModal({ modalRef: searchModalRef });
   const [count, setCount] = useLocalStorage("count", 0);
+  const [myCharacters] = api.character.getMyCharacters.useSuspenseQuery();
+  const character = myCharacters.find((c) => c.id === characterId);
+  const learnedSpells = character?.learnedSpells.map((s) => s.spell);
+
   const handleSelect = (spell: Spell) => {
     setSpells((prev) => {
       const newVal = [...prev, { ...spell, dndId: count }];
@@ -130,7 +134,6 @@ function Column({ level }: ColumnProps) {
     appendSpell(spell);
     setSpells((prev) => prev.filter((sp) => sp.dndId !== spell.dndId));
   }
-  const [allSpells] = api.spell.getSpells.useSuspenseQuery();
   const sensors = useSensors(
     useSensor(MyPointerSensor),
     useSensor(KeyboardSensor, {
@@ -183,7 +186,15 @@ function Column({ level }: ColumnProps) {
           </Button>
           {isSearchOpen && (
             <SearchModal
-              searchables={allSpells.filter((s) => s.level <= level)}
+              searchables={learnedSpells
+                ?.filter((s) => s.level <= level)
+                .sort((a, b) => {
+                  if (a.level === b.level) {
+                    return a.name.localeCompare(b.name);
+                  }
+                  return b.level - a.level;
+                })}
+              emptyMessage="You have not learned any spells of this level or lower"
               modalRef={searchModalRef}
               setClosed={() => setSearchOpen(false)}
               handleSelect={handleSelect}

@@ -16,7 +16,6 @@ export default function CharacterList() {
     <ItemList
       items={characters}
       onClick={async (character) => {
-        console.log(character.id, characterId);
         if (character.id === characterId) return;
         await Promise.all([
           setCharacter(() => character.id),

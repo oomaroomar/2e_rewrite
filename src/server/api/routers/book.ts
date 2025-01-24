@@ -47,6 +47,7 @@ export const bookRouter = createTRPCRouter({
       z.object({
         spellId: z.number(),
         bookId: z.number(),
+        spellName: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {

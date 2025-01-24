@@ -6,7 +6,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import CreateCharacterForm from "./_components/CreateCharacterForm";
 import CharacterList from "./_components/CharacterList";
-import SpellPage from "~/app/_components/SpellPage/SpellPageContainer";
+import SpellPageUserWrapper from "~/app/_components/SpellPage/SpellPageUserWrapper";
 import { Suspense } from "react";
 import PreparedSpellDnd from "./_components/PreparedSpellDnd";
 import CreateBookForm from "./_components/CreateBookForm";
@@ -53,7 +53,7 @@ export default async function LibraryPage() {
             className="overflow-auto pb-8"
             defaultSize={80}
           >
-            <SpellPage />
+            <SpellPageUserWrapper />
           </ResizablePanel>
         </ResizablePanelGroup>
       </div>
