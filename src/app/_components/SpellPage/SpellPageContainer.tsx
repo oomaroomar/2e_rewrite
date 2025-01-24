@@ -1,8 +1,7 @@
 "use client";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useContext, useRef } from "react";
 import { api } from "~/trpc/react";
 import {
-  parseAsBoolean,
   parseAsInteger,
   parseAsJson,
   parseAsNumberLiteral,
@@ -13,6 +12,8 @@ import useModal from "~/app/_components/hooks/useModal";
 import { filterSpells } from "./utils";
 import SpellPagePresentation from "./SpellPagePresentation";
 import { DescriptionListContext } from "../contexts/FullDescSpells";
+import { toast } from "~/hooks/use-toast";
+import { useQueryLocalStorage } from "../hooks/useLocalStorage";
 
 export default function SpellPage() {
   const searchModalRef = useRef<HTMLInputElement>(null);
@@ -20,7 +21,7 @@ export default function SpellPage() {
     modalRef: searchModalRef,
     toggleKey: "k",
   });
-  const [browseMode] = useQueryState(
+  const [browseMode] = useQueryLocalStorage(
     "browseMode",
     parseAsNumberLiteral(Object.values(browseModes)),
   );
@@ -29,8 +30,8 @@ export default function SpellPage() {
   )!;
   const [spells] = api.spell.getSpells.useSuspenseQuery();
   const [characters] = api.character.getMyCharacters.useSuspenseQuery();
-  const [characterId] = useQueryState("character", parseAsInteger);
-  const [bookId] = useQueryState("book", parseAsInteger);
+  const [characterId] = useQueryLocalStorage("character", parseAsInteger);
+  const [bookId] = useQueryLocalStorage("book", parseAsInteger);
   const [filters] = useQueryState(
     "filters",
     // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -43,17 +44,30 @@ export default function SpellPage() {
   );
 
   const utils = api.useUtils();
+  const character = characters.find((c) => c.id === characterId);
+  const book = character?.books.find((bk) => bk.id === bookId);
+
   const { mutate: learnSpellMutation } = api.character.learnSpell.useMutation({
-    onSuccess: async () => {
-      await utils.character.getMyCharacters.invalidate();
-      alert("Spell learned");
+    onSuccess: (_, v) => {
+      void utils.character.getMyCharacters.invalidate();
+      const spell = spells.find((sp) => sp.id === v.spellId);
+      if (!character || !spell) return;
+      toast({
+        title: "Spell learned",
+        description: `${character.name} learned ${spell.name}`,
+      });
     },
   });
 
   const { mutate: writeSpellMutation } = api.book.writeSpell.useMutation({
-    onSuccess: async () => {
-      await utils.character.getMyCharacters.invalidate();
-      alert("Spell written down");
+    onSuccess: (_, v) => {
+      void utils.character.getMyCharacters.invalidate();
+      const spell = spells.find((sp) => sp.id === v.spellId);
+      if (!book || !spell) return;
+      toast({
+        title: "Spell written",
+        description: `${spell.name} written into ${book.name}`,
+      });
     },
   });
 
@@ -69,14 +83,9 @@ export default function SpellPage() {
     }
   };
 
-  const learnedSpells = characters
-    .find((c) => c.id === characterId)
-    ?.learnedSpells.map((ls) => ls.spell);
+  const learnedSpells = character?.learnedSpells.map((ls) => ls.spell);
 
-  const bookSpells = characters
-    .find((c) => c.id === characterId)
-    ?.books.find((b) => b.id === bookId)
-    ?.spellCopies.map((sc) => sc.spell);
+  const bookSpells = book?.spellCopies.map((sc) => sc.spell);
 
   let finalSpells: Spell[] = spells;
   if (browseMode === browseModes.learned) {

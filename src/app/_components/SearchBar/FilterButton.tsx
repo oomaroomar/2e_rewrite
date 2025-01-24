@@ -124,7 +124,7 @@ export function SchoolFilterButton({
     <Toggle
       pressed={pressed}
       onClick={onClick}
-      className={`border-${school} rounded-sm rounded-b-none border-b-4 p-2 pb-1 data-[state=on]:rounded-b-sm data-[state=on]:border-zinc-200 data-[state=on]:bg-zinc-200`}
+      className={`border-${school} rounded-sm rounded-b-none border-b-4 p-2 pb-1 hover:bg-white hover:text-pink-500 data-[state=on]:rounded-b-sm data-[state=on]:border-zinc-200 data-[state=on]:bg-zinc-200`}
     >
       {capitalize(school)}
     </Toggle>

@@ -12,11 +12,13 @@ export default function Dropdown({ children }: { children: React.ReactNode }) {
   });
   return (
     <div ref={modalRef}>
-      <Button onClick={() => setOpen(!isOpen)}>
+      <Button variant="outline" onClick={() => setOpen(!isOpen)}>
         <span>Level filters</span>
       </Button>
       {isOpen && (
-        <div className="absolute flex flex-col gap-y-2">{children}</div>
+        <div className="absolute z-20 flex w-24 flex-col gap-y-2 bg-white">
+          {children}
+        </div>
       )}
     </div>
   );

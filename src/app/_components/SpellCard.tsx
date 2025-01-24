@@ -1,3 +1,10 @@
+import { Brain, NotebookPen } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 import { type Spell } from "~/types";
 
 interface SmallSpellCardProps {
@@ -55,20 +62,42 @@ export function BigSpellCard({
       <div className={`col-span-2 flex justify-between`}>
         <div className="col-span-7 text-lg font-semibold">{spell.name}</div>
         <div className="flex gap-2">
-          <div className="hover:cursor-pointer">
-            {writeSpell ? (
-              <span className="font-semibold" onClick={() => writeSpell(spell)}>
-                write spell
-              </span>
-            ) : null}
-          </div>
-          <div className="hover:cursor-pointer">
-            {learnSpell ? (
-              <span className="font-semibold" onClick={() => learnSpell(spell)}>
-                learn spell
-              </span>
-            ) : null}
-          </div>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="hover:cursor-pointer">
+                  {writeSpell ? (
+                    <span
+                      className="font-semibold"
+                      onClick={() => writeSpell(spell)}
+                    >
+                      <NotebookPen className="hover:stroke-pink-500" />
+                    </span>
+                  ) : null}
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                Write spell into currently seleted book
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="hover:cursor-pointer">
+                  {learnSpell ? (
+                    <span
+                      className="font-semibold"
+                      onClick={() => learnSpell(spell)}
+                    >
+                      <Brain className="hover:stroke-pink-500" />
+                    </span>
+                  ) : null}
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                Click for currently selected character to learn this spell
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </div>
       <div className="col-span-2">

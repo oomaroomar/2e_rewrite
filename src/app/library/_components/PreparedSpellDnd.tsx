@@ -1,13 +1,7 @@
 "use client";
 import { CSS } from "@dnd-kit/utilities";
 
-import {
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-  type PointerEvent,
-} from "react";
+import { useContext, useEffect, useRef, type PointerEvent } from "react";
 import { type Spell } from "~/types";
 import {
   closestCorners,
@@ -33,8 +27,10 @@ import { api } from "~/trpc/react";
 import { capitalize, getComponentsArray, isInteractiveElement } from "~/utils";
 import { DescriptionListContext } from "~/app/_components/contexts/FullDescSpells";
 import { parseAsInteger } from "nuqs";
-import { useQueryState } from "nuqs";
-import { useLocalStorage } from "~/app/_components/hooks/useLocalStorage";
+import {
+  useLocalStorage,
+  useQueryLocalStorage,
+} from "~/app/_components/hooks/useLocalStorage";
 
 type SpellWithDndId = Spell & { dndId: number };
 
@@ -119,9 +115,9 @@ function Column({ level }: ColumnProps) {
 }
 
 function PreparedSpellTable({ level }: ColumnProps) {
-  const [character, setCharacter] = useQueryState("character", parseAsInteger);
+  const [characterId] = useQueryLocalStorage("character", parseAsInteger);
   const [spells, setSpells] = useLocalStorage<Array<SpellWithDndId>>(
-    `preparedSpells-${character}-${level}`,
+    `preparedSpells-${characterId}-${level}`,
     [],
   );
   const searchModalRef = useRef<HTMLInputElement>(null);
@@ -142,7 +138,7 @@ function PreparedSpellTable({ level }: ColumnProps) {
   useEffect(() => {
     setSpells(() => {
       const preparedSpells = window.localStorage.getItem(
-        `preparedSpells-${character}-${level}`,
+        `preparedSpells-${characterId}-${level}`,
       );
       if (preparedSpells) {
         return JSON.parse(preparedSpells) as SpellWithDndId[];
@@ -150,7 +146,7 @@ function PreparedSpellTable({ level }: ColumnProps) {
       return [];
     });
     // No memoization required! Doesn't rerender a million times thanks to the react compiler :)
-  }, [character, level, setSpells]);
+  }, [characterId, level, setSpells]);
 
   const { appendSpell } = useContext(DescriptionListContext)!;
   function handleCast(spell: SpellWithDndId) {
@@ -182,10 +178,8 @@ function PreparedSpellTable({ level }: ColumnProps) {
       sensors={sensors}
       collisionDetection={closestCorners}
     >
-      <div className="flex flex-col gap-1">
-        <div
-          className={`grid max-w-96 grid-cols-4 gap-4 rounded-lg p-2 text-sm`}
-        >
+      <div className="flex max-w-80 flex-col gap-1">
+        <div className={`grid grid-cols-4 gap-4 rounded-lg p-2 text-sm`}>
           <div>Name</div>
           <div>Cast time</div>
           <div>Components</div>
@@ -202,7 +196,9 @@ function PreparedSpellTable({ level }: ColumnProps) {
             />
           ))}
         </SortableContext>
-        <Button onClick={() => setSearchOpen(true)}>Add Spell</Button>
+        <Button className="max-w-28" onClick={() => setSearchOpen(true)}>
+          Prepare a spell
+        </Button>
         {isSearchOpen && (
           <SearchModal
             searchables={allSpells}
@@ -244,9 +240,9 @@ function PreparedSpell({
       {...attributes}
       {...listeners}
       style={style}
-      className={`grid grid-cols-4 gap-4 border-l-[12px] p-2 border-${spell.schools[0]} max-w-96 rounded-lg`}
+      className={`grid grid-cols-4 gap-4 border-b-2 border-l-[12px] p-2 border-${spell.schools[0]} max-w-96 rounded-l-lg`}
     >
-      <div className="align-middle font-semibold">{spell.name}</div>
+      <div className="align-middle">{spell.name}</div>
       <div className="align-middle">{spell.castingTime}</div>
       <div className="align-middle">
         {getComponentsArray(spell)
@@ -254,6 +250,7 @@ function PreparedSpell({
           .join(", ")}
       </div>
       <Button
+        variant="outline"
         onClick={() => {
           handleCast(spell);
         }}

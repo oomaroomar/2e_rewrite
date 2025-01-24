@@ -23,23 +23,24 @@ import { useRef } from "react";
 import SearchModal from "./SearchModal";
 import { SpecializationResult } from "./SearchResult";
 import useModal from "../hooks/useModal";
-import { Book, Brain, Eye, Search } from "lucide-react";
+import { BookOpen, Brain, Eye, Search } from "lucide-react";
 import { TooltipContent } from "~/components/ui/tooltip";
 import { TooltipTrigger } from "~/components/ui/tooltip";
 import { Tooltip } from "~/components/ui/tooltip";
 import { TooltipProvider } from "~/components/ui/tooltip";
 import { Toggle } from "~/components/ui/toggle";
 import Dropdown from "./Dropdown";
+import { useQueryLocalStorage } from "../hooks/useLocalStorage";
 
 export function SearchBar({ openSearch }: { openSearch: () => void }) {
   const searchModalRef = useRef<HTMLInputElement>(null);
   const [isSearchOpen, setSearchOpen] = useModal({ modalRef: searchModalRef });
-  const [browseMode, setBrowseMode] = useQueryState<BrowseMode>(
+  const [browseMode, setBrowseMode] = useQueryLocalStorage<BrowseMode>(
     "browseMode",
     parseAsNumberLiteral(Object.values(browseModes)),
   );
-  const [characterId] = useQueryState("character", parseAsInteger);
-  const [bookId] = useQueryState("book", parseAsInteger);
+  const [characterId] = useQueryLocalStorage("character", parseAsInteger);
+  const [bookId] = useQueryLocalStorage("book", parseAsInteger);
   const [filters, setFilters] = useQueryState(
     "filters",
     // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -73,31 +74,36 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
   async function setSchools(schools: School[]) {
     await setFilters((old) => ({ ...old, schools }));
   }
-  async function toggleComponent(component: SpellComponent) {
-    await setFilters((old) => {
-      if (old.components.includes(component)) {
-        return {
-          ...old,
-          components: old.components.filter((c) => c !== component),
-        };
-      } else {
-        return { ...old, components: [...old.components, component] };
-      }
-    });
-  }
-  async function setDamaging(damaging: DmgOption) {
-    await setFilters((old) => ({ ...old, damaging }));
-  }
-  console.log(browseMode === browseModes.book);
+
+  // TODO: add component and damaging filters
+  // async function toggleComponent(component: SpellComponent) {
+  //   await setFilters((old) => {
+  //     if (old.components.includes(component)) {
+  //       return {
+  //         ...old,
+  //         components: old.components.filter((c) => c !== component),
+  //       };
+  //     } else {
+  //       return { ...old, components: [...old.components, component] };
+  //     }
+  //   });
+  // }
+  // async function setDamaging(damaging: DmgOption) {
+  //   await setFilters((old) => ({ ...old, damaging }));
+  // }
 
   return (
-    <nav className="hidden w-full items-center gap-x-3 border-b border-black px-2 py-2 text-xl md:flex">
-      <Button className="px-3" onClick={openSearch}>
+    <nav className="hidden w-full items-center gap-x-3 px-2 py-2 text-xl md:flex">
+      <Button variant="outline" className="px-3" onClick={openSearch}>
         <Search />
         <span>Search</span>
         {/* <span>Ctrl + K</span> */}
       </Button>
-      <Button className="px-3" onClick={() => setSearchOpen(true)}>
+      <Button
+        variant="outline"
+        className="px-3"
+        onClick={() => setSearchOpen(true)}
+      >
         <span>Specialization</span>
       </Button>
 
@@ -130,7 +136,7 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
               <TooltipTrigger asChild>
                 <Toggle
                   className="px-1 hover:cursor-pointer"
-                  onClick={() => setBrowseMode(browseModes.all)}
+                  onClick={() => setBrowseMode(() => browseModes.all)}
                   pressed={browseMode === browseModes.all}
                 >
                   <Eye />
@@ -145,7 +151,7 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
                 <Toggle
                   className="px-1 hover:cursor-pointer data-[state=on]:text-zinc-500"
                   pressed={browseMode === browseModes.learned}
-                  onClick={() => setBrowseMode(browseModes.learned)}
+                  onClick={() => setBrowseMode(() => browseModes.learned)}
                 >
                   <Brain />
                 </Toggle>
@@ -160,9 +166,9 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
                   <Toggle
                     pressed={browseMode === browseModes.book}
                     className="px-1 hover:cursor-pointer"
-                    onClick={() => setBrowseMode(browseModes.book)}
+                    onClick={() => setBrowseMode(() => browseModes.book)}
                   >
-                    <Book />
+                    <BookOpen />
                   </Toggle>
                 </TooltipTrigger>
                 <TooltipContent>

@@ -1,21 +1,27 @@
 "use client";
-import { parseAsInteger, useQueryState } from "nuqs";
+import { parseAsInteger } from "nuqs";
 import { api } from "~/trpc/react";
 import ItemList from "./ItemList";
+import { useQueryLocalStorage } from "~/app/_components/hooks/useLocalStorage";
 
 export default function CharacterList() {
   const [characters] = api.character.getMyCharacters.useSuspenseQuery();
-  const [character, setCharacter] = useQueryState("character", parseAsInteger);
-  const [, setBookId] = useQueryState("book", parseAsInteger);
+  const [characterId, setCharacter] = useQueryLocalStorage(
+    "character",
+    parseAsInteger,
+  );
+  const [, setBookId] = useQueryLocalStorage("book", parseAsInteger);
 
   return (
     <ItemList
       items={characters}
       onClick={async (character) => {
-        await setCharacter(character.id);
-        await setBookId(null);
+        console.log(character.id, characterId);
+        if (character.id === characterId) return;
+        await setCharacter(() => character.id);
+        await setBookId(() => null);
       }}
-      selectedItemId={character}
+      selectedItemId={characterId}
       title="Your Characters"
     />
   );

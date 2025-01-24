@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 export async function TopNav() {
   const session = await auth();
   return (
-    <nav className="hidden w-full grid-cols-3 items-center border-b border-black p-1 text-xl md:grid">
+    <nav className="hidden w-full grid-cols-3 items-center border-b border-pink-500 p-1 text-xl md:grid">
       <div className="pl-4">
         <Image height={50} width={50} alt="Spellbook manager" src="/book.png" />
       </div>
