@@ -8,13 +8,13 @@ import { filterSpells } from "./utils";
 import SpellPagePresentation from "./SpellPagePresentation";
 import { DescriptionListContext } from "../contexts/FullDescSpells";
 
-export default function SpellPage({
+export default function SpellPageContainer({
   learnSpell,
   writeSpell,
   specificSpells,
 }: {
   learnSpell?: (sp: Spell) => void;
-  writeSpell?: (sp: Spell) => void;
+  writeSpell?: (sp: Spell, pages: number) => void;
   specificSpells?: Spell[];
 }) {
   const searchModalRef = useRef<HTMLInputElement>(null);
@@ -51,7 +51,7 @@ export default function SpellPage({
       fullDescSpells={fullDescSpells}
       isSearchOpen={isSearchOpen}
       searchModalRef={searchModalRef}
-      allSpells={finalSpells}
+      allSpells={spells}
       appendFullDescSpell={(spell) => appendSpell(spell)}
       setSearchOpen={setSearchOpen}
       learnSpell={learnSpell}

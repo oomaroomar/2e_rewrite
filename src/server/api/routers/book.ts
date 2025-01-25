@@ -47,6 +47,7 @@ export const bookRouter = createTRPCRouter({
       z.object({
         spellId: z.number(),
         bookId: z.number(),
+        pages: z.number(),
         spellName: z.string(),
       }),
     )
@@ -66,6 +67,7 @@ export const bookRouter = createTRPCRouter({
       await ctx.db.insert(spellCopy).values({
         spellId: input.spellId,
         bookId: input.bookId,
+        pages: input.pages,
       });
     }),
 });

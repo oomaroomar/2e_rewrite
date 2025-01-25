@@ -10,6 +10,7 @@ import Placeholder from "../Placeholder";
 import { SearchBar } from "../SearchBar/SearchBar";
 import SearchModal from "../SearchBar/SearchModal";
 import { SpellResult } from "../SearchBar/SearchResult";
+import { toast } from "~/hooks/use-toast";
 
 interface SpellPagePresentationProps {
   spells: Spell[];
@@ -20,7 +21,7 @@ interface SpellPagePresentationProps {
   appendFullDescSpell: (spell: Spell) => void;
   setSearchOpen: (open: boolean) => void;
   learnSpell?: (spell: Spell) => void;
-  writeSpell?: (spell: Spell) => void;
+  writeSpell?: (spell: Spell, pages: number) => void;
 }
 
 export default function SpellPagePresentation({
@@ -80,7 +81,14 @@ export default function SpellPagePresentation({
           searchables={allSpells}
           modalRef={searchModalRef}
           setClosed={() => setSearchOpen(false)}
-          handleSelect={appendFullDescSpell}
+          handleSelect={(spell) => {
+            appendFullDescSpell(spell);
+            toast({
+              title: "Spell added",
+              description: spell.name,
+              className: `border-${spell.schools[0]}`,
+            });
+          }}
           searchKey="name"
           SearchItem={({ item, onSelect }) => (
             <SpellResult spell={item} onClick={onSelect} />

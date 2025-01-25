@@ -42,9 +42,6 @@ export default async function LibraryPage() {
             style={{ overflow: "auto" }}
             defaultSize={20}
           >
-            <div>
-              <h1 className="text-lg font-bold">Prepared Spells </h1>
-            </div>
             <PreparedSpellDnd />
           </ResizablePanel>
           <ResizableHandle className="" />

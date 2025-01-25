@@ -6,6 +6,8 @@ import {
   TooltipTrigger,
 } from "~/components/ui/tooltip";
 import { type Spell } from "~/types";
+import WriteSpellDialog from "./WriteSpellDialog";
+import { toast } from "~/hooks/use-toast";
 
 interface SmallSpellCardProps {
   spell: Spell;
@@ -15,7 +17,7 @@ interface SmallSpellCardProps {
 interface BigSpellCardProps {
   spell: Spell;
   learnSpell?: (spell: Spell) => void;
-  writeSpell?: (spell: Spell) => void;
+  writeSpell?: (spell: Spell, pages: number) => void;
 }
 
 export function SmallSpellCard({ spell, onClick }: SmallSpellCardProps) {
@@ -67,12 +69,9 @@ export function BigSpellCard({
               <TooltipTrigger asChild>
                 <div className="hover:cursor-pointer">
                   {writeSpell ? (
-                    <span
-                      className="font-semibold"
-                      onClick={() => writeSpell(spell)}
-                    >
-                      <NotebookPen className="hover:stroke-pink-500" />
-                    </span>
+                    <WriteSpellDialog
+                      writeSpell={(pages) => writeSpell(spell, pages)}
+                    />
                   ) : null}
                 </div>
               </TooltipTrigger>

@@ -42,6 +42,10 @@ export default {
     "shadow-rare",
     "shadow-epic",
     "shadow-legendary",
+    "border-common",
+    "border-rare",
+    "border-epic",
+    "border-legendary",
   ],
   theme: {
     extend: {

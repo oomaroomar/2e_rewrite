@@ -95,10 +95,10 @@ export default function SearchModal<T extends { id: number | string }>({
   );
 
   return (
-    <div className="p-12vh absolute left-0 top-28 z-40 mx-auto hidden w-full flex-col lg:flex">
+    <div className="p-12vh absolute left-0 top-0 z-40 mx-auto hidden h-full w-full flex-col backdrop-blur-sm lg:flex">
       <div
         ref={modalRef}
-        className="mx-auto my-0 flex w-full max-w-3xl flex-col rounded-lg bg-white shadow-md shadow-pink-500 sm:max-h-[40rem] lg:max-h-[68rem]"
+        className="mx-auto my-0 mt-28 flex w-full max-w-3xl flex-col rounded-lg border border-pink-500 bg-white shadow-md shadow-pink-500 sm:max-h-[40rem] lg:max-h-[68rem]"
       >
         <header className="relative flex items-center px-4 py-0">
           <form

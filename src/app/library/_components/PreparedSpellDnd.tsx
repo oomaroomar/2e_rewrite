@@ -31,6 +31,7 @@ import {
   useLocalStorage,
   useQueryLocalStorage,
 } from "~/app/_components/hooks/useLocalStorage";
+import { toast } from "~/hooks/use-toast";
 
 type SpellWithDndId = Spell & { dndId: number };
 
@@ -114,6 +115,11 @@ function Column({ level }: ColumnProps) {
       });
       return newVal;
     });
+    toast({
+      title: "Spell prepared",
+      description: spell.name,
+      className: `border-${spell.schools[0]}`,
+    });
   };
 
   useEffect(() => {
@@ -153,7 +159,9 @@ function Column({ level }: ColumnProps) {
     });
   };
   return (
-    <div className={`rounded-lg p-2 shadow-md shadow-${getLevelColor(level)}`}>
+    <div
+      className={`rounded-lg border p-2 border-${getLevelColor(level)} shadow-md shadow-${getLevelColor(level)}`}
+    >
       <div className="flex justify-between px-2">
         <h3 className="text-lg font-medium">Level {level} spells</h3>
         <span>{spells.length}</span>
@@ -164,10 +172,12 @@ function Column({ level }: ColumnProps) {
         collisionDetection={closestCorners}
       >
         <div className="flex max-w-80 flex-col gap-1">
-          <div className={`grid grid-cols-4 gap-4 rounded-lg p-2 text-sm`}>
-            <div>Name</div>
-            <div>Cast time</div>
+          <div
+            className={`grid grid-cols-3 gap-4 rounded-lg p-2 text-sm font-light`}
+          >
+            <div>Casting time</div>
             <div>Components</div>
+            <div>Action</div>
           </div>
           <SortableContext
             items={spells.map((spell) => spell.dndId)}
@@ -234,24 +244,30 @@ function PreparedSpell({
       {...attributes}
       {...listeners}
       style={style}
-      className={`grid grid-cols-4 gap-4 border-b-2 border-l-[12px] p-2 border-${spell.schools[0]} max-w-96 rounded-l-lg`}
+      className={`flex flex-col gap-1 border-b-2 border-l-[12px] p-2 border-${spell.schools[0]} max-w-96 rounded-l-lg hover:cursor-grab`}
     >
       <div className="align-middle">{spell.name}</div>
-      <div className="align-middle">{spell.castingTime}</div>
-      <div className="align-middle">
-        {getComponentsArray(spell)
-          .map((c) => c.charAt(0))
-          .join(", ")}
+      <div className="grid grid-cols-3 font-light">
+        <div className="flex">
+          <span className="h-6 self-end">{spell.castingTime}</span>
+        </div>
+        <div className="flex">
+          <span className="h-6 self-end">
+            {getComponentsArray(spell)
+              .map((c) => c.charAt(0))
+              .join(", ")}
+          </span>
+        </div>
+        <Button
+          variant="outline"
+          onClick={() => {
+            handleCast(spell);
+          }}
+          className="h-7 w-14 px-1 py-0 font-light hover:cursor-pointer"
+        >
+          Cast
+        </Button>
       </div>
-      <Button
-        variant="outline"
-        onClick={() => {
-          handleCast(spell);
-        }}
-        className="px-1 py-0"
-      >
-        Cast
-      </Button>
     </div>
   );
 }

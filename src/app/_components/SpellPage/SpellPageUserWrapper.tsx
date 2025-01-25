@@ -36,7 +36,7 @@ export default function SpellPageUserWrapper() {
       if (!book) return;
       toast({
         title: "Spell written",
-        description: `${v.spellName} written into ${book.name}`,
+        description: `${v.spellName} written into ${book.name}, taking ${v.pages} pages`,
       });
     },
   });
@@ -50,11 +50,12 @@ export default function SpellPageUserWrapper() {
     }
   };
 
-  const writeSpell = (spell: Spell) => {
+  const writeSpell = (spell: Spell, pages: number) => {
     if (characterId && bookId) {
       writeSpellMutation({
         spellId: spell.id,
         bookId: bookId,
+        pages: pages,
         spellName: spell.name,
       });
     }
