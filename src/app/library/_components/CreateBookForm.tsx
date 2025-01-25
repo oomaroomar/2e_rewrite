@@ -9,9 +9,10 @@ import { FormField } from "~/app/homebrew/_components/FormField";
 import { Button } from "~/components/ui/button";
 // import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { parseAsInteger, useQueryState } from "nuqs";
+import { parseAsInteger } from "nuqs";
 import { toast } from "~/hooks/use-toast";
 import { getRandomBookCreationPhrase } from "~/utils";
+import { useQueryLocalStorage } from "~/app/_components/hooks/useLocalStorage";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -21,7 +22,7 @@ const formSchema = z.object({
 export default function CreateBookForm() {
   // const router = useRouter();
   const utils = api.useUtils();
-  const [characterId] = useQueryState("character", parseAsInteger);
+  const [characterId] = useQueryLocalStorage("character", parseAsInteger);
   const { data: session } = useSession();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -60,13 +61,13 @@ export default function CreateBookForm() {
         <FormField
           control={form.control}
           name="name"
-          labelName="Give a name to your book"
+          labelName="Book name"
           placeholder="Spela's third Spellbook"
         />
         <FormField
           control={form.control}
           name="maxPages"
-          labelName="How many pages does your book have?"
+          labelName="Page count"
           placeholder="100"
         />
         <Button type="submit">Create</Button>

@@ -8,11 +8,15 @@ export default function ItemList<T extends { id: number; name: string }>({
   onClick,
   selectedItemId,
   title,
+  info,
+  moreInfo,
 }: {
   items: T[];
   onClick: (item: T) => void;
-  selectedItemId: number | null;
-  title: string;
+  selectedItemId?: number | null;
+  title?: string;
+  info?: (item: T) => string | null;
+  moreInfo?: () => void;
 }) {
   return (
     <ScrollArea>
@@ -20,11 +24,14 @@ export default function ItemList<T extends { id: number; name: string }>({
         <h4 className="mb-4 text-sm font-medium leading-none">{title}</h4>
         {items.map((item) => (
           <Fragment key={item.id}>
-            <div
-              onClick={() => onClick(item)}
-              className={`text-sm hover:cursor-pointer ${item.id === selectedItemId ? "text-pink-500" : ""}`}
-            >
-              {item.name}
+            <div className={`flex justify-between text-sm`}>
+              <span
+                onClick={() => onClick(item)}
+                className={`hover:cursor-pointer hover:text-pink-500 ${item.id === selectedItemId ? "text-pink-500" : ""}`}
+              >
+                {item.name}
+              </span>
+              <span onClick={moreInfo}>{info ? info(item) : null}</span>
             </div>
             <Separator className="my-2" />
           </Fragment>

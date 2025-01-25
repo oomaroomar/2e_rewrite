@@ -10,7 +10,8 @@ export const createQueryClient = () =>
       queries: {
         // With SSR, we usually want to set some default staleTime
         // above 0 to avoid refetching immediately on the client
-        staleTime: 30 * 1000,
+        // Cache will be invalidated manually
+        staleTime: 30 * 24 * 60 * 60 * 1000,
       },
       dehydrate: {
         serializeData: SuperJSON.serialize,

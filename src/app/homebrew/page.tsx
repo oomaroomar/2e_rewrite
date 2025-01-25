@@ -99,7 +99,6 @@ export default function Homebrew() {
       description: description.split("\n").filter((p) => p !== ""),
     };
     createSpell.mutate(spell);
-    console.log(spell);
   }
 
   if (!session) {

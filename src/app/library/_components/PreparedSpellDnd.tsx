@@ -1,13 +1,7 @@
 "use client";
 import { CSS } from "@dnd-kit/utilities";
 
-import {
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-  type PointerEvent,
-} from "react";
+import { useContext, useEffect, useRef, type PointerEvent } from "react";
 import { type Spell } from "~/types";
 import {
   closestCorners,
@@ -30,11 +24,14 @@ import useModal from "~/app/_components/hooks/useModal";
 import SearchModal from "~/app/_components/SearchBar/SearchModal";
 import { SpellResult } from "~/app/_components/SearchBar/SearchResult";
 import { api } from "~/trpc/react";
-import { capitalize, getComponentsArray, isInteractiveElement } from "~/utils";
+import { getComponentsArray, isInteractiveElement } from "~/utils";
 import { DescriptionListContext } from "~/app/_components/contexts/FullDescSpells";
 import { parseAsInteger } from "nuqs";
-import { useQueryState } from "nuqs";
-import { useLocalStorage } from "~/app/_components/hooks/useLocalStorage";
+import {
+  useLocalStorage,
+  useQueryLocalStorage,
+} from "~/app/_components/hooks/useLocalStorage";
+import { toast } from "~/hooks/use-toast";
 
 type SpellWithDndId = Spell & { dndId: number };
 
@@ -60,73 +57,54 @@ class MyPointerSensor extends PointerSensor {
 export default function PreparedSpellDnd() {
   return (
     <div className="flex flex-wrap gap-6">
-      <Column level="first" />
-      <Column level="second" />
-      <Column level="third" />
-      <Column level="fourth" />
-      <Column level="fifth" />
-      <Column level="sixth" />
-      <Column level="seventh" />
-      <Column level="eighth" />
-      <Column level="ninth" />
+      <Column level={1} />
+      <Column level={2} />
+      <Column level={3} />
+      <Column level={4} />
+      <Column level={5} />
+      <Column level={6} />
+      <Column level={7} />
+      <Column level={8} />
+      <Column level={9} />
     </div>
   );
 }
 
 type ColumnProps = {
-  level:
-    | "first"
-    | "second"
-    | "third"
-    | "fourth"
-    | "fifth"
-    | "sixth"
-    | "seventh"
-    | "eighth"
-    | "ninth";
+  level: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 };
 
 function getLevelColor(level: ColumnProps["level"]) {
   switch (level) {
-    case "first":
+    case 1:
+    case 2:
       return "common";
-    case "second":
-      return "common";
-    case "third":
+    case 3:
+    case 4:
+    case 5:
       return "rare";
-    case "fourth":
-      return "rare";
-    case "fifth":
-      return "rare";
-    case "sixth":
+    case 6:
+    case 7:
+    case 8:
       return "epic";
-    case "seventh":
-      return "epic";
-    case "eighth":
-      return "epic";
-    case "ninth":
+    case 9:
       return "legendary";
   }
 }
 
 function Column({ level }: ColumnProps) {
-  return (
-    <div className={`rounded-lg p-2 shadow-md shadow-${getLevelColor(level)}`}>
-      <h3 className="text-lg font-medium">{capitalize(level)} level spells</h3>
-      <PreparedSpellTable level={level} />
-    </div>
-  );
-}
-
-function PreparedSpellTable({ level }: ColumnProps) {
-  const [character, setCharacter] = useQueryState("character", parseAsInteger);
+  const [characterId] = useQueryLocalStorage("character", parseAsInteger);
   const [spells, setSpells] = useLocalStorage<Array<SpellWithDndId>>(
-    `preparedSpells-${character}-${level}`,
+    `preparedSpells-${characterId}-${level}`,
     [],
   );
   const searchModalRef = useRef<HTMLInputElement>(null);
   const [isSearchOpen, setSearchOpen] = useModal({ modalRef: searchModalRef });
   const [count, setCount] = useLocalStorage("count", 0);
+  const [myCharacters] = api.character.getMyCharacters.useSuspenseQuery();
+  const character = myCharacters.find((c) => c.id === characterId);
+  const learnedSpells = character?.learnedSpells.map((s) => s.spell);
+
   const handleSelect = (spell: Spell) => {
     setSpells((prev) => {
       const newVal = [...prev, { ...spell, dndId: count }];
@@ -137,12 +115,17 @@ function PreparedSpellTable({ level }: ColumnProps) {
       });
       return newVal;
     });
+    toast({
+      title: "Spell prepared",
+      description: spell.name,
+      className: `border-${spell.schools[0]}`,
+    });
   };
 
   useEffect(() => {
     setSpells(() => {
       const preparedSpells = window.localStorage.getItem(
-        `preparedSpells-${character}-${level}`,
+        `preparedSpells-${characterId}-${level}`,
       );
       if (preparedSpells) {
         return JSON.parse(preparedSpells) as SpellWithDndId[];
@@ -150,14 +133,13 @@ function PreparedSpellTable({ level }: ColumnProps) {
       return [];
     });
     // No memoization required! Doesn't rerender a million times thanks to the react compiler :)
-  }, [character, level, setSpells]);
+  }, [characterId, level, setSpells]);
 
   const { appendSpell } = useContext(DescriptionListContext)!;
   function handleCast(spell: SpellWithDndId) {
     appendSpell(spell);
     setSpells((prev) => prev.filter((sp) => sp.dndId !== spell.dndId));
   }
-  const [allSpells] = api.spell.getSpells.useSuspenseQuery();
   const sensors = useSensors(
     useSensor(MyPointerSensor),
     useSensor(KeyboardSensor, {
@@ -177,50 +159,68 @@ function PreparedSpellTable({ level }: ColumnProps) {
     });
   };
   return (
-    <DndContext
-      onDragEnd={handleDragEnd}
-      sensors={sensors}
-      collisionDetection={closestCorners}
+    <div
+      className={`rounded-lg border p-2 border-${getLevelColor(level)} shadow-md shadow-${getLevelColor(level)}`}
     >
-      <div className="flex flex-col gap-1">
-        <div
-          className={`grid max-w-96 grid-cols-4 gap-4 rounded-lg p-2 text-sm`}
-        >
-          <div>Name</div>
-          <div>Cast time</div>
-          <div>Components</div>
-        </div>
-        <SortableContext
-          items={spells.map((spell) => spell.dndId)}
-          strategy={verticalListSortingStrategy}
-        >
-          {spells.map((spell) => (
-            <PreparedSpell
-              key={spell.dndId}
-              spell={spell}
-              handleCast={handleCast}
-            />
-          ))}
-        </SortableContext>
-        <Button onClick={() => setSearchOpen(true)}>Add Spell</Button>
-        {isSearchOpen && (
-          <SearchModal
-            searchables={allSpells}
-            modalRef={searchModalRef}
-            setClosed={() => setSearchOpen(false)}
-            handleSelect={handleSelect}
-            fuseOptions={{
-              keys: ["name"],
-              threshold: 0.6,
-              minMatchCharLength: 0,
-            }}
-            SearchItem={({ item, onSelect }) => (
-              <SpellResult spell={item} onClick={onSelect} />
-            )}
-          />
-        )}
+      <div className="flex justify-between px-2">
+        <h3 className="text-lg font-medium">Level {level} spells</h3>
+        <span>{spells.length}</span>
       </div>
-    </DndContext>
+      <DndContext
+        onDragEnd={handleDragEnd}
+        sensors={sensors}
+        collisionDetection={closestCorners}
+      >
+        <div className="flex max-w-80 flex-col gap-1">
+          <div
+            className={`grid grid-cols-3 gap-4 rounded-lg p-2 text-sm font-light`}
+          >
+            <div>Casting time</div>
+            <div>Components</div>
+            <div>Action</div>
+          </div>
+          <SortableContext
+            items={spells.map((spell) => spell.dndId)}
+            strategy={verticalListSortingStrategy}
+          >
+            {spells.map((spell) => (
+              <PreparedSpell
+                key={spell.dndId}
+                spell={spell}
+                handleCast={handleCast}
+              />
+            ))}
+          </SortableContext>
+          <Button className="max-w-28" onClick={() => setSearchOpen(true)}>
+            Prepare a spell
+          </Button>
+          {isSearchOpen && (
+            <SearchModal
+              searchables={learnedSpells
+                ?.filter((s) => s.level <= level)
+                .sort((a, b) => {
+                  if (a.level === b.level) {
+                    return a.name.localeCompare(b.name);
+                  }
+                  return b.level - a.level;
+                })}
+              emptyMessage="You have not learned any spells of this level or lower"
+              modalRef={searchModalRef}
+              setClosed={() => setSearchOpen(false)}
+              handleSelect={handleSelect}
+              fuseOptions={{
+                keys: ["name"],
+                threshold: 0.6,
+                minMatchCharLength: 0,
+              }}
+              SearchItem={({ item, onSelect }) => (
+                <SpellResult spell={item} onClick={onSelect} />
+              )}
+            />
+          )}
+        </div>
+      </DndContext>
+    </div>
   );
 }
 
@@ -244,23 +244,30 @@ function PreparedSpell({
       {...attributes}
       {...listeners}
       style={style}
-      className={`grid grid-cols-4 gap-4 border-l-[12px] p-2 border-${spell.schools[0]} max-w-96 rounded-lg`}
+      className={`flex flex-col gap-1 border-b-2 border-l-[12px] p-2 border-${spell.schools[0]} max-w-96 rounded-l-lg hover:cursor-grab`}
     >
-      <div className="align-middle font-semibold">{spell.name}</div>
-      <div className="align-middle">{spell.castingTime}</div>
-      <div className="align-middle">
-        {getComponentsArray(spell)
-          .map((c) => c.charAt(0))
-          .join(", ")}
+      <div className="align-middle">{spell.name}</div>
+      <div className="grid grid-cols-3 font-light">
+        <div className="flex">
+          <span className="h-6 self-end">{spell.castingTime}</span>
+        </div>
+        <div className="flex">
+          <span className="h-6 self-end">
+            {getComponentsArray(spell)
+              .map((c) => c.charAt(0))
+              .join(", ")}
+          </span>
+        </div>
+        <Button
+          variant="outline"
+          onClick={() => {
+            handleCast(spell);
+          }}
+          className="h-7 w-14 px-1 py-0 font-light hover:cursor-pointer"
+        >
+          Cast
+        </Button>
       </div>
-      <Button
-        onClick={() => {
-          handleCast(spell);
-        }}
-        className="px-1 py-0"
-      >
-        Cast
-      </Button>
     </div>
   );
 }

@@ -4,14 +4,13 @@ import {
   schools,
   filterSchema,
   type School,
-  type DmgOption,
-  type SpellComponent,
+  // type DmgOption,
+  // type SpellComponent,
   spellLevels,
   specFilters,
   type BrowseMode,
   browseModes,
 } from "~/types";
-import { BorderedSearchBarBtn } from "./SearchBarBtn";
 import { LevelFilterButton, SchoolFilterButton } from "./FilterButton";
 import {
   parseAsInteger,
@@ -24,21 +23,23 @@ import { useRef } from "react";
 import SearchModal from "./SearchModal";
 import { SpecializationResult } from "./SearchResult";
 import useModal from "../hooks/useModal";
-import { Book, Brain, Eye, Search } from "lucide-react";
+import { BookOpen, Brain, Eye, Search } from "lucide-react";
 import { TooltipContent } from "~/components/ui/tooltip";
 import { TooltipTrigger } from "~/components/ui/tooltip";
 import { Tooltip } from "~/components/ui/tooltip";
 import { TooltipProvider } from "~/components/ui/tooltip";
 import { Toggle } from "~/components/ui/toggle";
+import Dropdown from "./Dropdown";
+import { useQueryLocalStorage } from "../hooks/useLocalStorage";
 
 export function SearchBar({ openSearch }: { openSearch: () => void }) {
   const searchModalRef = useRef<HTMLInputElement>(null);
   const [isSearchOpen, setSearchOpen] = useModal({ modalRef: searchModalRef });
-  const [browseMode, setBrowseMode] = useQueryState<BrowseMode>(
+  const [browseMode, setBrowseMode] = useQueryLocalStorage<BrowseMode>(
     "browseMode",
     parseAsNumberLiteral(Object.values(browseModes)),
   );
-  const [characterId] = useQueryState("character", parseAsInteger);
+  const [characterId] = useQueryLocalStorage("character", parseAsInteger);
   const [bookId] = useQueryState("book", parseAsInteger);
   const [filters, setFilters] = useQueryState(
     "filters",
@@ -73,31 +74,36 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
   async function setSchools(schools: School[]) {
     await setFilters((old) => ({ ...old, schools }));
   }
-  async function toggleComponent(component: SpellComponent) {
-    await setFilters((old) => {
-      if (old.components.includes(component)) {
-        return {
-          ...old,
-          components: old.components.filter((c) => c !== component),
-        };
-      } else {
-        return { ...old, components: [...old.components, component] };
-      }
-    });
-  }
-  async function setDamaging(damaging: DmgOption) {
-    await setFilters((old) => ({ ...old, damaging }));
-  }
-  console.log(browseMode === browseModes.book);
+
+  // TODO: add component and damaging filters
+  // async function toggleComponent(component: SpellComponent) {
+  //   await setFilters((old) => {
+  //     if (old.components.includes(component)) {
+  //       return {
+  //         ...old,
+  //         components: old.components.filter((c) => c !== component),
+  //       };
+  //     } else {
+  //       return { ...old, components: [...old.components, component] };
+  //     }
+  //   });
+  // }
+  // async function setDamaging(damaging: DmgOption) {
+  //   await setFilters((old) => ({ ...old, damaging }));
+  // }
 
   return (
-    <nav className="hidden w-full items-center gap-x-4 border-b border-black px-2 py-2 text-xl md:flex">
-      <Button onClick={openSearch}>
+    <nav className="hidden w-full items-center gap-x-3 px-2 py-2 text-xl md:flex">
+      <Button variant="outline" className="px-3" onClick={openSearch}>
         <Search />
         <span>Search</span>
-        <span>Ctrl + K</span>
+        {/* <span>Ctrl + K</span> */}
       </Button>
-      <Button onClick={() => setSearchOpen(true)}>
+      <Button
+        variant="outline"
+        className="px-3"
+        onClick={() => setSearchOpen(true)}
+      >
         <span>Specialization</span>
       </Button>
 
@@ -111,7 +117,7 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
           />
         ))}
       </ul>
-      <ul className="flex gap-x-1">
+      <Dropdown>
         {spellLevels.map((level) => (
           <LevelFilterButton
             pressed={filters.levels.includes(level)}
@@ -121,7 +127,7 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
             {level}
           </LevelFilterButton>
         ))}
-      </ul>
+      </Dropdown>
 
       {characterId && (
         <div className="flex items-center gap-x-2">
@@ -129,8 +135,8 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Toggle
-                  className="hover:cursor-pointer"
-                  onClick={() => setBrowseMode(browseModes.all)}
+                  className={`px-1 hover:cursor-pointer ${browseMode === browseModes.all ? "bg-pink-200" : ""}`}
+                  onClick={() => setBrowseMode(() => browseModes.all)}
                   pressed={browseMode === browseModes.all}
                 >
                   <Eye />
@@ -143,9 +149,9 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Toggle
-                  className="hover:cursor-pointer data-[state=on]:text-zinc-500"
+                  className={`px-1 hover:cursor-pointer ${browseMode === browseModes.learned ? "bg-pink-200" : ""}`}
                   pressed={browseMode === browseModes.learned}
-                  onClick={() => setBrowseMode(browseModes.learned)}
+                  onClick={() => setBrowseMode(() => browseModes.learned)}
                 >
                   <Brain />
                 </Toggle>
@@ -159,10 +165,10 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
                 <TooltipTrigger asChild>
                   <Toggle
                     pressed={browseMode === browseModes.book}
-                    className="hover:cursor-pointer"
-                    onClick={() => setBrowseMode(browseModes.book)}
+                    className={`px-1 hover:cursor-pointer ${browseMode === browseModes.book ? "bg-pink-200" : ""}`}
+                    onClick={() => setBrowseMode(() => browseModes.book)}
                   >
-                    <Book />
+                    <BookOpen />
                   </Toggle>
                 </TooltipTrigger>
                 <TooltipContent>

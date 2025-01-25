@@ -1,4 +1,36 @@
+"use client";
+
+import { useQueryState, type UseQueryStateOptions } from "nuqs";
 import { useEffect, useState } from "react";
+
+export function useQueryLocalStorage<T>(
+  key: string,
+  options: UseQueryStateOptions<T & {}>,
+): [
+  (T & {}) | null,
+  (updateFunction: (prev: (T & {}) | null) => (T & {}) | null) => Promise<void>,
+] {
+  const [value, setValue] = useQueryState<T & {}>(key, options);
+
+  useEffect(() => {
+    const item = window.localStorage.getItem(key);
+    if (item && value === null) {
+      void setValue(JSON.parse(item) as T & {});
+    }
+  }, [key, setValue, value]);
+
+  async function storeValue(
+    updateFunction: (prev: (T & {}) | null) => (T & {}) | null,
+  ) {
+    await setValue((prev) => {
+      const newVal = updateFunction(prev);
+      window.localStorage.setItem(key, JSON.stringify(newVal));
+      return newVal;
+    });
+  }
+
+  return [value, storeValue];
+}
 
 // fallbackValue is the value to use if the key is not found in localStorage
 export function useLocalStorage<T>(

@@ -37,7 +37,6 @@ export default function BatchHomebrew() {
       description: spell.description.split("\n").filter((line) => line !== ""),
     }));
     createSpells.mutate(spells);
-    console.log(parsed);
   }
   return (
     <div id="main-container" className="flex justify-center p-4">

@@ -56,8 +56,8 @@ export default function CreateCharacterForm() {
         <FormField
           control={form.control}
           name="name"
-          labelName="Create a new character"
-          placeholder="Gandalf the Grey"
+          labelName="Character name"
+          placeholder="Merlin"
         />
         <Button type="submit">Create</Button>
       </form>

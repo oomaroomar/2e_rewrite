@@ -63,7 +63,6 @@ export const CheckboxField = <
       control={props.control}
       name={props.name}
       render={({ field }) => {
-        console.log(field.value);
         return (
           <FormItem className="flex w-2/5 flex-row items-start space-x-3 space-y-0 rounded-md p-2">
             <FormControl>

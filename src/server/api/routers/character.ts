@@ -46,6 +46,7 @@ export const characterRouter = createTRPCRouter({
       z.object({
         spellId: z.number(),
         characterId: z.number(),
+        spellName: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
