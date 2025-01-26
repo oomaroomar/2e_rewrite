@@ -123,6 +123,17 @@ export const spellSchema = z.object({
 
 export type Spell = z.infer<typeof spellSchema> & { id: number };
 
+export type Book = {
+  id: number;
+  characterId: number;
+  maxPages: number | null;
+  name: string;
+  spellCopies: {
+    spell: Spell;
+    pages: number | null;
+  }[];
+};
+
 export const browseModes = {
   all: 0,
   learned: 1,

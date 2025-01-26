@@ -1,3 +1,4 @@
+import { eq } from "drizzle-orm";
 import { TRPCError } from "node_modules/@trpc/server/dist/unstable-core-do-not-import/error/TRPCError";
 
 import { z } from "zod";
@@ -69,5 +70,31 @@ export const bookRouter = createTRPCRouter({
         bookId: input.bookId,
         pages: input.pages,
       });
+    }),
+
+  eraseSpell: protectedProcedure
+    .input(
+      z.object({
+        spellId: z.number(),
+        bookId: z.number(),
+        spellName: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const book = await ctx.db.query.books.findFirst({
+        where: (book, { eq }) => eq(book.id, input.bookId),
+      });
+      if (!book) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Book not found" });
+      }
+      if (book.userId !== ctx.session.user.id) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You are not authorized to delete this spell",
+        });
+      }
+      await ctx.db
+        .delete(spellCopy)
+        .where(eq(spellCopy.spellId, input.spellId));
     }),
 });

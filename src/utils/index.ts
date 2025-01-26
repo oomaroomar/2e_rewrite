@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { type Spell } from "~/types";
+import { type Book, type Spell } from "~/types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -64,4 +64,14 @@ export function isInteractiveElement(element: HTMLElement) {
   }
 
   return false;
+}
+
+export function getPagesLeft(book: Book) {
+  if (!book.maxPages) return "unlimited";
+  const pagesLeft =
+    book.maxPages -
+    book.spellCopies.reduce((acc, curr) => {
+      return acc + (curr.pages ?? 0);
+    }, 0);
+  return `${pagesLeft}/${book.maxPages}`;
 }

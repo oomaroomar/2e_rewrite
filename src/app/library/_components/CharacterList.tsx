@@ -1,7 +1,7 @@
 "use client";
 import { parseAsInteger, useQueryState } from "nuqs";
 import { api } from "~/trpc/react";
-import ItemList from "./ItemList";
+import ItemList from "./ItemListFork";
 import { useQueryLocalStorage } from "~/app/_components/hooks/useLocalStorage";
 
 export default function CharacterList() {
@@ -11,6 +11,8 @@ export default function CharacterList() {
     parseAsInteger,
   );
   const [, setBookId] = useQueryState("book", parseAsInteger);
+
+  console.log(characters);
 
   return (
     <ItemList
