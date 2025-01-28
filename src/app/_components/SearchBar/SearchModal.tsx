@@ -99,7 +99,7 @@ export default function SearchModal<T extends { id: number | string }>({
   return (
     <div
       data-state={isOpen ? "open" : "closed"}
-      className="p-12vh absolute left-0 top-0 z-40 mx-auto flex h-full w-full flex-col backdrop-blur-sm duration-100 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95"
+      className="p-12vh absolute left-0 top-0 z-40 mx-auto flex h-full w-full flex-col duration-100 data-[state=open]:backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95"
     >
       <div
         ref={modalRef}

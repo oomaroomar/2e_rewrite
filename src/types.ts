@@ -47,8 +47,8 @@ export const schoolLabels = [
   "Conjuration",
   "Divination",
   "Enchantment",
-  "Invocation",
   "Illusion",
+  "Invocation",
   "Necromancy",
 ] as const;
 
@@ -82,6 +82,7 @@ export const components = ["somatic", "verbal", "material"] as const;
 export type Sphere = (typeof spheres)[number];
 export type School = (typeof schools)[number];
 export type CastingClass = (typeof castingClasses)[number];
+export type CastingTime = (typeof castingTimes)[number];
 export type SpellLevel = (typeof spellLevels)[number];
 export type SavingThrow = (typeof savingThrows)[number];
 export type Source = (typeof sources)[number];
