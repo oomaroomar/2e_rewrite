@@ -11,9 +11,10 @@ import { ScrollArea } from "~/components/ui/scroll-area";
 import { Search } from "lucide-react";
 
 interface SearchModalProps<T extends { id: number | string }> {
-  modalRef: RefObject<HTMLDivElement>;
+  modalRef?: RefObject<HTMLDivElement>;
   setClosed: () => void;
   searchables?: T[];
+  isOpen: boolean;
   handleSelect: (s: T) => void;
   searchKey?: string;
   SearchItem: React.ComponentType<{
@@ -29,6 +30,7 @@ export default function SearchModal<T extends { id: number | string }>({
   setClosed,
   searchables,
   handleSelect,
+  isOpen,
   searchKey,
   SearchItem,
   fuseOptions,
@@ -95,7 +97,10 @@ export default function SearchModal<T extends { id: number | string }>({
   );
 
   return (
-    <div className="p-12vh absolute left-0 top-0 z-40 mx-auto hidden h-full w-full flex-col backdrop-blur-sm lg:flex">
+    <div
+      data-state={isOpen ? "open" : "closed"}
+      className="p-12vh absolute left-0 top-0 z-40 mx-auto flex h-full w-full flex-col backdrop-blur-sm duration-100 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95"
+    >
       <div
         ref={modalRef}
         className="mx-auto my-0 mt-28 flex w-full max-w-3xl flex-col rounded-lg border border-pink-500 bg-white shadow-md shadow-pink-500 sm:max-h-[40rem] lg:max-h-[68rem]"

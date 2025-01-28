@@ -194,6 +194,7 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
       {/* <div>additional filters</div> */}
       {isSearchOpen && (
         <SearchModal
+          isOpen={isSearchOpen}
           searchables={[...schools.map((s) => ({ id: s }))]}
           modalRef={searchModalRef}
           setClosed={() => setSearchOpen(false)}

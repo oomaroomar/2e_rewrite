@@ -11,6 +11,7 @@ import { Suspense } from "react";
 import PreparedSpellDnd from "./_components/PreparedSpellDnd";
 import CreateBookForm from "./_components/CreateBookForm";
 import BookList from "./_components/BookList";
+import CopyBookForm from "./_components/CopyBookForm";
 
 export default async function LibraryPage() {
   return (
@@ -32,6 +33,7 @@ export default async function LibraryPage() {
               </TabsContent>
               <TabsContent value="books">
                 <CreateBookForm />
+                <CopyBookForm />
                 <BookList />
               </TabsContent>
             </Tabs>

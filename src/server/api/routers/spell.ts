@@ -7,6 +7,8 @@ import {
 } from "~/server/api/trpc";
 import { spells } from "~/server/db/schema/spells";
 import { spellSchema } from "~/types";
+import { eq } from "drizzle-orm";
+import { z } from "zod";
 
 const inputSpellSchema = spellSchema.omit({ source: true });
 
@@ -32,4 +34,13 @@ export const spellRouter = createTRPCRouter({
     });
     return spells ?? [];
   }),
+  // The application is only used by me and my friends, so I don't need to check for permissions
+  editSpell: protectedProcedure
+    .input(z.object({ spellId: z.number(), spell: inputSpellSchema }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .update(spells)
+        .set(input.spell)
+        .where(eq(spells.id, input.spellId));
+    }),
 });
