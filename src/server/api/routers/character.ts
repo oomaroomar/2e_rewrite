@@ -1,4 +1,5 @@
-import { eq } from "drizzle-orm";
+import { TRPCError } from "@trpc/server";
+import { and, eq } from "drizzle-orm";
 
 import { z } from "zod";
 
@@ -55,5 +56,24 @@ export const characterRouter = createTRPCRouter({
         spellId: input.spellId,
         charId: input.characterId,
       });
+    }),
+  deleteCharacter: protectedProcedure
+    .input(z.object({ characterId: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      const deletedCharacter = await ctx.db
+        .delete(characters)
+        .where(
+          and(
+            eq(characters.id, input.characterId),
+            eq(characters.userId, ctx.session.user.id),
+          ),
+        )
+        .returning();
+      if (deletedCharacter.length === 0) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You are not authorized to delete this character",
+        });
+      }
     }),
 });

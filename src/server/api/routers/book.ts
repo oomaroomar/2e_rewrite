@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { TRPCError } from "node_modules/@trpc/server/dist/unstable-core-do-not-import/error/TRPCError";
 
 import { z } from "zod";
@@ -7,7 +7,6 @@ import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
-  // publicProcedure,
 } from "~/server/api/trpc";
 import { books, spellCopy } from "~/server/db/schema/characters";
 
@@ -160,5 +159,25 @@ export const bookRouter = createTRPCRouter({
       await ctx.db
         .delete(spellCopy)
         .where(eq(spellCopy.spellId, input.spellId));
+    }),
+  deleteBook: protectedProcedure
+    .input(z.object({ bookId: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      const deletedBook = await ctx.db
+        .delete(books)
+        .where(
+          and(
+            eq(books.id, input.bookId),
+            eq(books.userId, ctx.session.user.id),
+          ),
+        )
+        .returning();
+      if (deletedBook.length === 0) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You are not authorized to delete this book",
+        });
+      }
+      return deletedBook[0];
     }),
 });
