@@ -27,8 +27,15 @@ export default function EditPage() {
       void utils.spell.getSpells.invalidate();
       toast({
         title: "Spell updated",
-        description: v.spell.name,
+        description: v.spell.name + " updated",
         className: `border-${v.spell.schools[0]}`,
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
       });
     },
   });

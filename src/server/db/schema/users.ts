@@ -6,6 +6,7 @@ import {
   timestamp,
   varchar,
   primaryKey,
+  boolean,
 } from "drizzle-orm/pg-core";
 
 import { createTable } from "~/utils/createTable";
@@ -22,6 +23,7 @@ export const users = createTable("user", {
     mode: "date",
   }),
   image: varchar("image", { length: 255 }),
+  isAdmin: boolean("isAdmin").default(false),
 });
 
 export const favBooks = createTable(
