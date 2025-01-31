@@ -12,10 +12,11 @@ import PreparedSpellDnd from "./_components/PreparedSpellDnd";
 import CreateBookForm from "./_components/book/CreateBookForm";
 import BookList from "./_components/book/BookList";
 import CopyBookForm from "./_components/book/CopyBookForm";
+import Loading from "~/components/ui/loading";
 
 export default async function LibraryPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<Loading />}>
       <div className="h-full w-full">
         <ResizablePanelGroup className="w-full" direction="horizontal">
           <ResizablePanel defaultSize={10} style={{ overflow: "auto" }}>
