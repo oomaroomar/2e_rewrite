@@ -4,14 +4,14 @@ import {
   ResizableHandle,
 } from "~/components/ui/resizable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import CreateCharacterForm from "./_components/CreateCharacterForm";
-import CharacterList from "./_components/CharacterList";
+import CreateCharacterForm from "./_components/character/CreateCharacterForm";
+import CharacterList from "./_components/character/CharacterList";
 import SpellPageUserWrapper from "~/app/_components/SpellPage/SpellPageUserWrapper";
 import { Suspense } from "react";
 import PreparedSpellDnd from "./_components/PreparedSpellDnd";
-import CreateBookForm from "./_components/CreateBookForm";
-import BookList from "./_components/BookList";
-import CopyBookForm from "./_components/CopyBookForm";
+import CreateBookForm from "./_components/book/CreateBookForm";
+import BookList from "./_components/book/BookList";
+import CopyBookForm from "./_components/book/CopyBookForm";
 
 export default async function LibraryPage() {
   return (

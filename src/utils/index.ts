@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { toast } from "~/hooks/use-toast";
 import { type Book, type Spell } from "~/types";
 
 export function cn(...inputs: ClassValue[]) {
@@ -64,6 +65,15 @@ export function isInteractiveElement(element: HTMLElement) {
   }
 
   return false;
+}
+
+export function copyBookUrl(book: Book) {
+  const bookurl = `${window.location.origin}/book/${book.id}`;
+  void navigator.clipboard.writeText(bookurl);
+  toast({
+    title: "Copied to clipboard",
+    description: bookurl,
+  });
 }
 
 export function getPagesLeft(book: Book) {

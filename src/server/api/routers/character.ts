@@ -58,7 +58,7 @@ export const characterRouter = createTRPCRouter({
       });
     }),
   deleteCharacter: protectedProcedure
-    .input(z.object({ characterId: z.number() }))
+    .input(z.object({ characterId: z.number(), characterName: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const deletedCharacter = await ctx.db
         .delete(characters)
