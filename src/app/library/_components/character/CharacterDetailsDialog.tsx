@@ -38,11 +38,10 @@ export default function CharacterDetailsDialog({
           </div>
         </DialogTitle>
       </DialogHeader>
-      <ScrollArea>
+      <ScrollArea className="max-h-[500px] overflow-hidden">
         <div className="">
           <div className={`grid grid-cols-5 justify-between py-4 text-sm`}>
             <div className="col-span-3">Name</div>
-            <div>Pages taken</div>
             <div>Delete</div>
           </div>
           {character.learnedSpells.map((sc) => (

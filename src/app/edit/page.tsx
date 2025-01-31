@@ -85,6 +85,7 @@ export default function EditPage() {
       )}
       {isOpen && (
         <SearchModal
+          fullScreen={true}
           searchKey="name"
           searchables={spells}
           isOpen={false}
