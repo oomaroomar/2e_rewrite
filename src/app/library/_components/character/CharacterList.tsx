@@ -21,6 +21,8 @@ import {
 } from "~/components/ui/context-menu";
 import DeleteDialog from "../DeleteDialog";
 import { toast } from "~/hooks/use-toast";
+import { Info } from "lucide-react";
+import CharacterDetailsDialog from "./CharacterDetailsDialog";
 
 export default function CharacterList() {
   const [characters] = api.character.getMyCharacters.useSuspenseQuery();
@@ -70,8 +72,16 @@ export default function CharacterList() {
                 </ContextMenuTrigger>
                 <ContextMenuContent>
                   <ContextMenuItem>
-                    <DialogTrigger onClick={() => setDialogVariant("info")}>
-                      <span>Character info</span>
+                    <DialogTrigger
+                      onClick={() => {
+                        setDialogVariant("info");
+                        setCharacter(char);
+                      }}
+                    >
+                      <span className="flex items-center gap-2">
+                        <Info size={16} />
+                        Details
+                      </span>
                     </DialogTrigger>
                   </ContextMenuItem>
                   <ContextMenuItem>
@@ -90,23 +100,24 @@ export default function CharacterList() {
               <Separator className="my-2" />
             </Fragment>
           ))}
-          {dialogVariant === "info" ? (
+          {dialogVariant === "info" && character && (
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Character info</DialogTitle>
               </DialogHeader>
-              <DialogDescription>
-                <span>Character info</span>
-              </DialogDescription>
+              <CharacterDetailsDialog
+                character={characters.find((c) => c.id === character.id)!}
+              />
             </DialogContent>
-          ) : (
+          )}
+          {dialogVariant === "delete" && character && (
             <DeleteDialog
-              item={character!}
+              item={character}
               closeDialog={() => setOpen(false)}
               deleteItem={(cId) =>
                 deleteCharacter({
                   characterId: cId,
-                  characterName: character!.name,
+                  characterName: character.name,
                 })
               }
             />
