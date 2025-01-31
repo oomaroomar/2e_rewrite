@@ -57,6 +57,25 @@ export const characterRouter = createTRPCRouter({
         charId: input.characterId,
       });
     }),
+  unlearnSpell: protectedProcedure
+    .input(
+      z.object({
+        spellId: z.number(),
+        characterId: z.number(),
+        spellName: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .delete(learnedSpells)
+        .where(
+          and(
+            eq(learnedSpells.spellId, input.spellId),
+            eq(learnedSpells.charId, input.characterId),
+            eq(learnedSpells.userId, ctx.session.user.id),
+          ),
+        );
+    }),
   deleteCharacter: protectedProcedure
     .input(z.object({ characterId: z.number(), characterName: z.string() }))
     .mutation(async ({ ctx, input }) => {
