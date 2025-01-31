@@ -8,7 +8,6 @@ import {
   savingThrows,
   spellSchema,
 } from "~/types";
-import { desc } from "drizzle-orm";
 
 export const fireballText =
   "A fireball is an explosive burst of flame, which detonates with a low roar and delivers damage proportional to the level of the wizard who cast it - 1d6 points of damage for each level of experience of the spellcaster (up to a maximum of 10d6).";

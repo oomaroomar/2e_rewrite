@@ -11,7 +11,7 @@ export async function TopNav() {
       <div className="pl-4">
         <Image height={50} width={50} alt="Spellbook manager" src="/book.png" />
       </div>
-      <ul className="flex items-center justify-between gap-x-4 justify-self-center">
+      <ul className="flex items-center justify-between gap-x-4 justify-self-center text-base">
         <li>
           <Link className="hover:text-pink-500" href={"/"}>
             Home
@@ -27,6 +27,11 @@ export async function TopNav() {
             <li>
               <Link className="hover:text-pink-500" href={"/homebrew"}>
                 Create a spell
+              </Link>
+            </li>
+            <li>
+              <Link className="hover:text-pink-500" href={"/edit"}>
+                Edit a spell
               </Link>
             </li>
           </>

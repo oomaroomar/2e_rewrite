@@ -196,6 +196,7 @@ function Column({ level }: ColumnProps) {
           </Button>
           {isSearchOpen && (
             <SearchModal
+              isOpen={isSearchOpen}
               searchables={learnedSpells
                 ?.filter((s) => s.level <= level)
                 .sort((a, b) => {

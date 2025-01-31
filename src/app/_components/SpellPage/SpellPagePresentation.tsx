@@ -8,9 +8,6 @@ import {
 } from "~/components/ui/resizable";
 import Placeholder from "../Placeholder";
 import { SearchBar } from "../SearchBar/SearchBar";
-import SearchModal from "../SearchBar/SearchModal";
-import { SpellResult } from "../SearchBar/SearchResult";
-import { toast } from "~/hooks/use-toast";
 
 interface SpellPagePresentationProps {
   spells: Spell[];
@@ -27,9 +24,6 @@ interface SpellPagePresentationProps {
 export default function SpellPagePresentation({
   spells,
   fullDescSpells,
-  isSearchOpen,
-  searchModalRef,
-  allSpells,
   appendFullDescSpell,
   setSearchOpen,
   learnSpell,
@@ -76,25 +70,6 @@ export default function SpellPagePresentation({
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
-      {isSearchOpen && (
-        <SearchModal
-          searchables={allSpells}
-          modalRef={searchModalRef}
-          setClosed={() => setSearchOpen(false)}
-          handleSelect={(spell) => {
-            appendFullDescSpell(spell);
-            toast({
-              title: "Spell added",
-              description: spell.name,
-              className: `border-${spell.schools[0]}`,
-            });
-          }}
-          searchKey="name"
-          SearchItem={({ item, onSelect }) => (
-            <SpellResult spell={item} onClick={onSelect} />
-          )}
-        />
-      )}
     </div>
   );
 }

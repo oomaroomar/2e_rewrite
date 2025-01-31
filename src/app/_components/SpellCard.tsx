@@ -1,4 +1,4 @@
-import { Brain, NotebookPen } from "lucide-react";
+import { Brain } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -7,7 +7,6 @@ import {
 } from "~/components/ui/tooltip";
 import { type Spell } from "~/types";
 import WriteSpellDialog from "./WriteSpellDialog";
-import { toast } from "~/hooks/use-toast";
 
 interface SmallSpellCardProps {
   spell: Spell;
