@@ -23,6 +23,7 @@ interface SearchModalProps<T extends { id: number | string }> {
   }>;
   fuseOptions?: IFuseOptions<T>;
   emptyMessage?: string;
+  fullScreen?: boolean;
 }
 
 export default function SearchModal<T extends { id: number | string }>({
@@ -35,6 +36,7 @@ export default function SearchModal<T extends { id: number | string }>({
   SearchItem,
   fuseOptions,
   emptyMessage,
+  fullScreen = false,
 }: SearchModalProps<T>) {
   const [searchPattern, setSearchPattern] = useState<string>("");
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
@@ -99,11 +101,13 @@ export default function SearchModal<T extends { id: number | string }>({
   return (
     <div
       data-state={isOpen ? "open" : "closed"}
-      className="p-12vh absolute left-0 top-0 z-40 mx-auto flex h-full w-full flex-col duration-100 data-[state=open]:backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95"
+      className={`p-12vh absolute left-0 top-0 z-40 mx-auto flex h-full w-full flex-col duration-100 data-[state=open]:backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 ${
+        fullScreen ? "top-28" : ""
+      }`}
     >
       <div
         ref={modalRef}
-        className="mx-auto my-0 mt-28 flex w-full max-w-3xl flex-col rounded-lg border border-pink-500 bg-white shadow-md shadow-pink-500 sm:max-h-[40rem] lg:max-h-[68rem]"
+        className={`mx-auto my-0 ${fullScreen ? "" : "mt-28"} flex w-full max-w-3xl flex-col rounded-lg border border-pink-500 bg-white shadow-md shadow-pink-500 sm:max-h-[40rem] lg:max-h-[68rem]`}
       >
         <header className="relative flex items-center px-4 py-0">
           <form
@@ -132,7 +136,6 @@ export default function SearchModal<T extends { id: number | string }>({
               autoComplete="off"
             />
           </form>
-          <button>Cancel</button>
         </header>
         <div className="flex flex-auto overflow-auto px-2">
           <ScrollArea className="w-full pb-6">

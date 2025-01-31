@@ -16,7 +16,12 @@ export const DescriptionListProvider = ({
   const [spells, setSpells] = useState<Spell[]>([]);
 
   const appendSpell = (sp: Spell) => {
-    setSpells((prev) => [sp, ...prev]);
+    setSpells((prev) => {
+      if (prev[0] === sp) {
+        return prev;
+      }
+      return [sp, ...prev];
+    });
   };
 
   return (
