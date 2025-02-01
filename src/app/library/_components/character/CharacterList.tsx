@@ -1,5 +1,5 @@
 "use client";
-import { parseAsInteger, useQueryState } from "nuqs";
+import { parseAsInteger } from "nuqs";
 import { api } from "~/trpc/react";
 import { useQueryLocalStorage } from "~/app/_components/hooks/useLocalStorage";
 import { ScrollArea } from "~/components/ui/scroll-area";
@@ -8,7 +8,6 @@ import { Separator } from "~/components/ui/separator";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -21,8 +20,10 @@ import {
 } from "~/components/ui/context-menu";
 import DeleteDialog from "../DeleteDialog";
 import { toast } from "~/hooks/use-toast";
-import { Info } from "lucide-react";
+import { Copy, Info, Trash2 } from "lucide-react";
 import CharacterDetailsDialog from "./CharacterDetailsDialog";
+import { Button } from "~/components/ui/button";
+import { copyCharacterUrl } from "~/utils";
 
 export default function CharacterList() {
   const [characters] = api.character.getMyCharacters.useSuspenseQuery();
@@ -53,8 +54,8 @@ export default function CharacterList() {
   return (
     <ScrollArea>
       <div className="p-4">
-        <div className="flex justify-between text-sm">
-          <span className="mb-4 font-medium leading-none">Your Characters</span>
+        <div className="mb-4 flex justify-between text-sm">
+          <span className="font-medium">Your Characters</span>
           <span>Learned spells</span>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
@@ -85,12 +86,23 @@ export default function CharacterList() {
                     </DialogTrigger>
                   </ContextMenuItem>
                   <ContextMenuItem>
+                    <div
+                      className="flex items-center gap-2 hover:cursor-pointer"
+                      onClick={() => copyCharacterUrl(char)}
+                    >
+                      <Copy size={16} />
+                      <span>Copy link</span>
+                    </div>
+                  </ContextMenuItem>
+                  <ContextMenuItem>
                     <DialogTrigger
                       onClick={() => {
                         setCharacter(char);
                         setDialogVariant("delete");
                       }}
+                      className="flex items-center gap-2"
                     >
+                      <Trash2 size={16} />
                       <span>Delete character</span>
                     </DialogTrigger>
                   </ContextMenuItem>
