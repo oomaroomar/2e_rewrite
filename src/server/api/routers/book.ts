@@ -160,6 +160,27 @@ export const bookRouter = createTRPCRouter({
         .delete(spellCopy)
         .where(eq(spellCopy.spellId, input.spellId));
     }),
+  renameBook: protectedProcedure
+    .input(z.object({ bookId: z.number(), name: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const updatedBook = await ctx.db
+        .update(books)
+        .set({ name: input.name })
+        .where(
+          and(
+            eq(books.id, input.bookId),
+            eq(books.userId, ctx.session.user.id),
+          ),
+        )
+        .returning();
+      if (!updatedBook[0]) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Book not found",
+        });
+      }
+      return updatedBook[0];
+    }),
   deleteBook: protectedProcedure
     .input(z.object({ bookId: z.number() }))
     .mutation(async ({ ctx, input }) => {

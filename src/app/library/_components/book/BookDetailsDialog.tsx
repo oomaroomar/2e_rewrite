@@ -5,13 +5,15 @@ import {
 } from "~/components/ui/dialog";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Button } from "~/components/ui/button";
-import { Copy, Trash2 } from "lucide-react";
-import { Fragment } from "react";
+import { Copy, Trash2, Pencil, X } from "lucide-react";
+import { Fragment, useState } from "react";
 import { Separator } from "~/components/ui/separator";
 import { type Book } from "~/types";
 import { copyBookUrl, getPagesLeft } from "~/utils";
 import { api } from "~/trpc/react";
 import { toast } from "~/hooks/use-toast";
+import { Input } from "~/components/ui/input";
+import { useEscapeKey } from "~/hooks/useEscapeKey";
 
 export default function BookDetailsDialog({ book }: { book: Book }) {
   const utils = api.useUtils();
@@ -25,12 +27,64 @@ export default function BookDetailsDialog({ book }: { book: Book }) {
     },
   });
 
+  const { mutate: renameBook } = api.book.renameBook.useMutation({
+    onSuccess: (_, v) => {
+      void utils.character.getMyCharacters.invalidate();
+      toast({
+        title: `Book renamed to ${v.name}`,
+      });
+    },
+  });
+
+  const [renameBookOpen, setRenameBookOpen] = useState(false);
+  const [renameBookName, setRenameBookName] = useState(book.name);
+
+  const handleRenameBook = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    renameBook({ bookId: book.id, name: renameBookName });
+    setRenameBookOpen(false);
+  };
+
+  useEscapeKey({
+    onEscape: () => {
+      setRenameBookOpen(false);
+    },
+    condition: renameBookOpen,
+  });
+
   return (
     <DialogContent>
       <DialogHeader>
-        <DialogTitle className="flex justify-between pr-6">
-          <div>
-            <span className="pr-2">Spells in {book.name}</span>{" "}
+        <DialogTitle className="flex flex-col gap-2 pr-6">
+          <div className="flex w-full items-center gap-2">
+            {renameBookOpen ? (
+              <form
+                className="flex items-center gap-2"
+                onSubmit={handleRenameBook}
+              >
+                <Input
+                  value={renameBookName}
+                  onChange={(e) => setRenameBookName(e.target.value)}
+                />
+                {/*For some reason size="icon" didn't work*/}
+                <Button className="h-9 w-9" variant="outline" type="submit">
+                  <Pencil className="stroke-pink-500" />
+                </Button>
+              </form>
+            ) : (
+              <div className="flex items-center gap-2">
+                <span className="pr-2">Spells in {book.name}</span>
+              </div>
+            )}
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => {
+                setRenameBookOpen(!renameBookOpen);
+              }}
+            >
+              {renameBookOpen ? <X /> : <Pencil />}
+            </Button>
             <Button
               variant="outline"
               onClick={() => copyBookUrl(book)}
@@ -39,7 +93,9 @@ export default function BookDetailsDialog({ book }: { book: Book }) {
               <Copy />
             </Button>
           </div>
-          <span>pages left: {getPagesLeft(book)}</span>
+          <span className="text-sm font-light">
+            Pages left: {getPagesLeft(book)}
+          </span>
         </DialogTitle>
       </DialogHeader>
       <ScrollArea>

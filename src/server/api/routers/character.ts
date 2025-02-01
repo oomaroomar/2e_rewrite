@@ -6,6 +6,7 @@ import { z } from "zod";
 import {
   createTRPCRouter,
   protectedProcedure,
+  publicProcedure,
   // publicProcedure,
 } from "~/server/api/trpc";
 import { characters, learnedSpells } from "~/server/db/schema/characters";
@@ -18,6 +19,21 @@ export const characterRouter = createTRPCRouter({
         name: input.name,
         userId: ctx.session.user.id,
       });
+    }),
+  getCharacterById: publicProcedure
+    .input(z.object({ characterId: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const character = await ctx.db.query.characters.findFirst({
+        where: eq(characters.id, input.characterId),
+        with: {
+          learnedSpells: {
+            with: {
+              spell: true,
+            },
+          },
+        },
+      });
+      return character;
     }),
   getMyCharacters: protectedProcedure.query(async ({ ctx }) => {
     const chars = await ctx.db.query.characters.findMany({
@@ -56,6 +72,27 @@ export const characterRouter = createTRPCRouter({
         spellId: input.spellId,
         charId: input.characterId,
       });
+    }),
+  renameCharacter: protectedProcedure
+    .input(z.object({ characterId: z.number(), name: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const updatedCharacter = await ctx.db
+        .update(characters)
+        .set({ name: input.name })
+        .where(
+          and(
+            eq(characters.id, input.characterId),
+            eq(characters.userId, ctx.session.user.id),
+          ),
+        )
+        .returning();
+      if (!updatedCharacter[0]) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Character not found",
+        });
+      }
+      return updatedCharacter[0];
     }),
   unlearnSpell: protectedProcedure
     .input(

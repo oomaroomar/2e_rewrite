@@ -2,6 +2,7 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { toast } from "~/hooks/use-toast";
 import { type Book, type Spell } from "~/types";
+import { type Character } from "~/clientTypes";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -73,6 +74,15 @@ export function copyBookUrl(book: Book) {
   toast({
     title: "Copied to clipboard",
     description: bookurl,
+  });
+}
+
+export function copyCharacterUrl(character: Character) {
+  const characterurl = `${window.location.origin}/character/${character.id}`;
+  void navigator.clipboard.writeText(characterurl);
+  toast({
+    title: "Copied to clipboard",
+    description: characterurl,
   });
 }
 
