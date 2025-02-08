@@ -163,8 +163,8 @@ function Column({ level }: ColumnProps) {
       className={`rounded-lg border p-2 border-${getLevelColor(level)} shadow-md shadow-${getLevelColor(level)}`}
     >
       <div className="flex justify-between px-2">
-        <h3 className="text-lg font-medium">Level {level} spells</h3>
-        <span>{spells.length}</span>
+        <h3 className="pb-2 text-base font-medium">Level {level} spells</h3>
+        <span>{spells.length !== 0 ? spells.length : ""}</span>
       </div>
       <DndContext
         onDragEnd={handleDragEnd}
@@ -172,13 +172,6 @@ function Column({ level }: ColumnProps) {
         collisionDetection={closestCorners}
       >
         <div className="flex max-w-80 flex-col gap-1">
-          <div
-            className={`grid grid-cols-3 gap-4 rounded-lg p-2 text-sm font-light`}
-          >
-            <div>Casting time</div>
-            <div>Components</div>
-            <div>Action</div>
-          </div>
           <SortableContext
             items={spells.map((spell) => spell.dndId)}
             strategy={verticalListSortingStrategy}
@@ -245,30 +238,18 @@ function PreparedSpell({
       {...attributes}
       {...listeners}
       style={style}
-      className={`flex flex-col gap-1 border-b-2 border-l-[12px] p-2 border-${spell.schools[0]} max-w-96 rounded-l-lg hover:cursor-grab`}
+      className={`flex w-full justify-between gap-1 border-b-2 border-l-[12px] p-2 border-${spell.schools[0]} min-w-60 max-w-96 rounded-l-lg hover:cursor-grab`}
     >
-      <div className="align-middle">{spell.name}</div>
-      <div className="grid grid-cols-3 font-light">
-        <div className="flex">
-          <span className="h-6 self-end">{spell.castingTime}</span>
-        </div>
-        <div className="flex">
-          <span className="h-6 self-end">
-            {getComponentsArray(spell)
-              .map((c) => c.charAt(0))
-              .join(", ")}
-          </span>
-        </div>
-        <Button
-          variant="outline"
-          onClick={() => {
-            handleCast(spell);
-          }}
-          className="h-7 w-14 px-1 py-0 font-light hover:cursor-pointer"
-        >
-          Cast
-        </Button>
-      </div>
+      <div className="font-base align-middle text-sm">{spell.name}</div>
+      <Button
+        variant="outline"
+        onClick={() => {
+          handleCast(spell);
+        }}
+        className="px-1 py-0 font-light hover:cursor-pointer"
+      >
+        Cast: {spell.castingTime}
+      </Button>
     </div>
   );
 }
