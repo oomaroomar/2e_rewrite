@@ -93,7 +93,7 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
   // }
 
   return (
-    <nav className="hidden w-full items-center gap-x-3 px-2 py-2 text-xl md:flex">
+    <nav className="hidden w-full items-center justify-center gap-x-3 px-2 py-2 text-xl md:flex">
       <Button variant="outline" className="px-3" onClick={openSearch}>
         <Search />
         <span>Search</span>
@@ -196,9 +196,13 @@ export function SearchBar({ openSearch }: { openSearch: () => void }) {
         <SearchModal
           isOpen={isSearchOpen}
           searchables={[...schools.map((s) => ({ id: s }))]}
+          placeholder="Search specializations"
           modalRef={searchModalRef}
           setClosed={() => setSearchOpen(false)}
-          handleSelect={(sc) => setSchools([...specFilters[sc.id]])}
+          handleSelect={async (sc) => {
+            await setSchools([...specFilters[sc.id]]);
+            setSearchOpen(false);
+          }}
           fuseOptions={{
             keys: ["id"],
             threshold: 0.6,

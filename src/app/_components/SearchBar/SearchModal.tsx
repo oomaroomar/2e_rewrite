@@ -13,7 +13,7 @@ import { Search } from "lucide-react";
 interface SearchModalProps<T extends { id: number | string }> {
   modalRef?: RefObject<HTMLDivElement>;
   setClosed: () => void;
-  searchables?: T[];
+  searchables: T[];
   isOpen: boolean;
   handleSelect: (s: T) => void;
   searchKey?: string;
@@ -24,6 +24,7 @@ interface SearchModalProps<T extends { id: number | string }> {
   fuseOptions?: IFuseOptions<T>;
   emptyMessage?: string;
   fullScreen?: boolean;
+  placeholder?: string;
 }
 
 export default function SearchModal<T extends { id: number | string }>({
@@ -37,6 +38,7 @@ export default function SearchModal<T extends { id: number | string }>({
   fuseOptions,
   emptyMessage,
   fullScreen = false,
+  placeholder,
 }: SearchModalProps<T>) {
   const [searchPattern, setSearchPattern] = useState<string>("");
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
@@ -83,6 +85,12 @@ export default function SearchModal<T extends { id: number | string }>({
 
   const handleEnter = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (fuseOptions?.minMatchCharLength === 0 && searchPattern.length === 0) {
+      if (searchables[selectedIndex]) {
+        handleSelect(searchables[selectedIndex]);
+        return;
+      }
+    }
     const results = fuse.search(searchPattern);
     if (results[selectedIndex]?.item) {
       handleSelect(results[selectedIndex].item);
@@ -129,7 +137,7 @@ export default function SearchModal<T extends { id: number | string }>({
               className="ml-3 mr-4 flex h-14 w-full appearance-none outline-none"
               type="search"
               onKeyDown={handleKeyDown}
-              placeholder="Search spells"
+              placeholder={placeholder ?? "Search spells"}
               spellCheck="false"
               autoCapitalize="false"
               autoCorrect="false"

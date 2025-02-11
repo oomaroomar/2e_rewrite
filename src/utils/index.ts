@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { toast } from "~/hooks/use-toast";
-import { type Book, type Spell } from "~/types";
+import { School, type Book, type Spell } from "~/types";
 import { type Character } from "~/clientTypes";
 
 export function cn(...inputs: ClassValue[]) {
@@ -50,6 +50,27 @@ export function getRandomSpellCreationPhrase(spellName: string) {
     `Huzzah, a new spell! ${spellName} has been created!`,
   ];
   return phrases[Math.floor(Math.random() * phrases.length)];
+}
+
+export function getSchoolShorthand(school: School) {
+  switch (school) {
+    case "abjuration":
+      return "Abj";
+    case "alteration":
+      return "Alt";
+    case "conjuration":
+      return "Conj";
+    case "divination":
+      return "Div";
+    case "enchantment":
+      return "Ench";
+    case "invocation":
+      return "Evoc";
+    case "illusion":
+      return "Illu";
+    case "necromancy":
+      return "Necro";
+  }
 }
 
 export function isInteractiveElement(element: HTMLElement) {

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import { Toggle } from "~/components/ui/toggle";
 import { School } from "~/types";
-import { capitalize } from "~/utils";
+import { capitalize, getSchoolShorthand } from "~/utils";
 
 interface FilterButtonProps {
   name: string;
@@ -130,7 +130,7 @@ export function SchoolFilterButton({
       onClick={onClick}
       className={`border-${school} rounded-sm rounded-b-none border-b-4 p-2 pb-1 hover:bg-white hover:text-pink-500 data-[state=on]:rounded-b-sm data-[state=on]:border-zinc-200 data-[state=on]:bg-zinc-200`}
     >
-      {capitalize(school)}
+      {getSchoolShorthand(school)}
     </Toggle>
   );
 }
